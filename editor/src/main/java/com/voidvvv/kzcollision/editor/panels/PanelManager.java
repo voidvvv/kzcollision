@@ -7,11 +7,17 @@ public class PanelManager {
     private final EditorStateProvider stateProvider;
     private final SourceImagesPanel sourceImagesPanel;
     private final SpriteFramesPanel spriteFramesPanel;
+    private final AnimationsPanel animationsPanel;
+    private final AnimationControlsPanel animationControlsPanel;
+    private final PropertiesPanel propertiesPanel;
 
     public PanelManager(EditorStateProvider stateProvider) {
         this.stateProvider = stateProvider;
         this.sourceImagesPanel = new SourceImagesPanel(stateProvider);
         this.spriteFramesPanel = new SpriteFramesPanel(stateProvider);
+        this.animationsPanel = new AnimationsPanel(stateProvider);
+        this.animationControlsPanel = new AnimationControlsPanel(stateProvider);
+        this.propertiesPanel = new PropertiesPanel(stateProvider);
     }
 
     public void render() {
@@ -27,27 +33,20 @@ public class PanelManager {
         ImGui.setNextWindowSize(220, 350, ImGuiCond.Once);
         spriteFramesPanel.render();
 
-        // Placeholder panels -- will be replaced in Tasks 9-11
+        // Animations panel (right-top)
         ImGui.setNextWindowPos(1040, 20, ImGuiCond.Once);
         ImGui.setNextWindowSize(240, 200, ImGuiCond.Once);
-        if (ImGui.begin("Animations")) {
-            ImGui.text("Animations here");
-            ImGui.end();
-        }
+        animationsPanel.render();
 
+        // Properties panel (right-bottom)
         ImGui.setNextWindowPos(1040, 220, ImGuiCond.Once);
         ImGui.setNextWindowSize(240, 350, ImGuiCond.Once);
-        if (ImGui.begin("Properties")) {
-            ImGui.text("Properties here");
-            ImGui.end();
-        }
+        propertiesPanel.render();
 
+        // Controls panel (bottom bar)
         ImGui.setNextWindowPos(220, 680, ImGuiCond.Once);
         ImGui.setNextWindowSize(820, 40, ImGuiCond.Once);
-        if (ImGui.begin("Controls")) {
-            ImGui.text("Controls here");
-            ImGui.end();
-        }
+        animationControlsPanel.render();
     }
 
     private void renderMenuBar() {
