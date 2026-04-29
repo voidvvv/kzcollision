@@ -1,0 +1,68 @@
+buildscript {
+  repositories {
+    gradlePluginPortal()
+  }
+  dependencies {
+    classpath "io.github.fourlastor:construo:2.1.0"
+  }
+}
+plugins {
+  id "application"
+}
+apply plugin: 'io.github.fourlastor.construo'
+
+import io.github.fourlastor.construo.Target
+
+sourceSets.main.resources.srcDirs += [ rootProject.file('assets').path ]
+application.mainClass = 'com.voidvvv.kzcollision.editor.ImGuiLauncher'
+eclipse.project.name = appName + '-editor'
+java.sourceCompatibility = 11
+java.targetCompatibility = 11
+if (JavaVersion.current().isJava9Compatible()) {
+  compileJava.options.release.set(11)
+}
+
+dependencies {
+  implementation project(':core')
+  implementation project(':sdk')
+  implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+  implementation "com.badlogicgames.gdx:gdx-lwjgl3-angle:$gdxVersion"
+  implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+  implementation("com.badlogicgames.gdx:gdx-tools:$gdxVersion") {
+    exclude group: 'com.badlogicgames.gdx', module: 'gdx-backend-lwjgl'
+  }
+  // imgui-java
+  implementation "io.github.spair:imgui-java-binding:$imguiVersion"
+  implementation "io.github.spair:imgui-java-lwjgl3:$imguiVersion"
+  implementation "io.github.spair:imgui-java-natives-windows:$imguiVersion"
+  implementation "io.github.spair:imgui-java-natives-linux:$imguiVersion"
+  implementation "io.github.spair:imgui-java-natives-macos:$imguiVersion"
+}
+
+def os = System.properties['os.name'].toLowerCase(Locale.ROOT)
+
+run {
+  workingDir = rootProject.file('assets').path
+  if (os.contains('mac')) jvmArgs += "-XstartOnFirstThread"
+}
+
+jar {
+  archiveFileName.set("${appName}-${projectVersion}.jar")
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+  dependsOn configurations.runtimeClasspath
+  from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+  exclude('META-INF/INDEX.LIST', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA')
+  dependencies {
+    exclude('META-INF/INDEX.LIST', 'META-INF/maven/**')
+  }
+  manifest {
+    attributes 'Main-Class': application.mainClass, 'Enable-Native-Access': 'ALL-UNNAMED'
+  }
+  doLast {
+    file(archiveFile).setExecutable(true, false)
+  }
+}
+
+tasks.register('dist') {
+  dependsOn 'jar'
+}
