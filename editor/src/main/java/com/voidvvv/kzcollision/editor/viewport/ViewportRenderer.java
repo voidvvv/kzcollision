@@ -89,6 +89,27 @@ public class ViewportRenderer {
             }
             shapes.end();
 
+            // Draw resize handles on selected box
+            if (selectedBoxId != null) {
+                for (CollisionBox box : frame.getCollisionBoxes()) {
+                    if (box.getId().equals(selectedBoxId)) {
+                        float handleSize = 6f / camera.getZoom();
+                        float half = handleSize / 2f;
+                        float bx = box.getX() - originX;
+                        float by = box.getY() - originY;
+
+                        shapes.begin(ShapeRenderer.ShapeType.Filled);
+                        shapes.setColor(1f, 1f, 1f, 1f);
+                        shapes.rect(bx - half, by - half, handleSize, handleSize);
+                        shapes.rect(bx + box.getWidth() - half, by - half, handleSize, handleSize);
+                        shapes.rect(bx - half, by + box.getHeight() - half, handleSize, handleSize);
+                        shapes.rect(bx + box.getWidth() - half, by + box.getHeight() - half, handleSize, handleSize);
+                        shapes.end();
+                        break;
+                    }
+                }
+            }
+
             // Draw origin marker
             shapes.begin(ShapeRenderer.ShapeType.Filled);
             shapes.setColor(1f, 0.92f, 0.23f, 1f); // Yellow
