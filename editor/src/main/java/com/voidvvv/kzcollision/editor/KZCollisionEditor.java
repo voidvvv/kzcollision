@@ -51,10 +51,10 @@ public class KZCollisionEditor extends com.badlogic.gdx.ApplicationAdapter {
         Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
 
-        // Render viewport (space between ImGui docked panels)
-        float vpX = 220, vpY = 0, vpW = 820, vpH = 660;
-        viewportInputHandler.setViewportBounds(vpX, vpY, vpW, vpH);
-        viewportRenderer.render(vpX, vpY, vpW, vpH);
+        // Render viewport (full-screen behind ImGui panels)
+        float vpW = Gdx.graphics.getWidth();
+        float vpH = Gdx.graphics.getHeight();
+        viewportRenderer.render(0, 0, vpW, vpH);
 
         // Start ImGui frame
         imGuiGl3.newFrame();
