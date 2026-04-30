@@ -7,6 +7,8 @@ import com.voidvvv.kzcollision.core.model.SourceAsset;
 import com.voidvvv.kzcollision.core.model.SourceRegion;
 import com.voidvvv.kzcollision.core.model.SpriteFrame;
 import com.voidvvv.kzcollision.editor.EditorState;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import imgui.ImGui;
 import imgui.type.ImInt;
 
@@ -236,8 +238,24 @@ public class SourceImagesPanel {
             pendingImports.clear();
         }
         if (!toAdd.isEmpty()) {
-            Project project = stateProvider.getState().getProject();
-            project.getSourceAssets().addAll(toAdd);
+            EditorState state = stateProvider.getState();
+            Project project = state.getProject();
+            for (SourceAsset asset : toAdd) {
+                project.getSourceAssets().add(asset);
+
+                if (asset.getType() == AssetType.SINGLE) {
+                    try {
+                        Texture tex = new Texture(Gdx.files.absolute(asset.getFilePath()));
+                        state.getTextureCache().put(asset.getFilePath(), tex);
+                        if (!asset.getRegions().isEmpty()) {
+                            SourceRegion region = asset.getRegions().get(0);
+                            region.setBounds(new Rect(0, 0, tex.getWidth(), tex.getHeight()));
+                        }
+                    } catch (Exception e) {
+                        Gdx.app.log("SourceImagesPanel", "Failed to load texture: " + asset.getFilePath(), e);
+                    }
+                }
+            }
         }
     }
 }
