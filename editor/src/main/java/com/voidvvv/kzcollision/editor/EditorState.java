@@ -4,6 +4,8 @@ import com.voidvvv.kzcollision.core.model.Animation;
 import com.voidvvv.kzcollision.core.model.AnimationFrame;
 import com.voidvvv.kzcollision.core.model.Project;
 
+import com.badlogic.gdx.graphics.Texture;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +16,7 @@ public class EditorState {
     private String selectedCollisionBoxId;
     private boolean playing = false;
     private float playbackTimer = 0f;
-    private transient Map<String, Object> textureCache = new HashMap<>();
+    private transient Map<String, Texture> textureCache = new HashMap<>();
 
     public EditorState() {
         this.project = new Project("Untitled");
@@ -45,5 +47,5 @@ public class EditorState {
         return anim.getFrames().get(idx);
     }
 
-    public Map<String, Object> getTextureCache() { return textureCache; }
+    public Map<String, Texture> getTextureCache() { return textureCache; }
 }

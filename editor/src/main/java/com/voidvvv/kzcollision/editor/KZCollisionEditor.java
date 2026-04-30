@@ -9,6 +9,7 @@ import com.voidvvv.kzcollision.editor.viewport.ViewportInputHandler;
 import com.voidvvv.kzcollision.editor.viewport.ViewportRenderer;
 
 import imgui.ImGui;
+import imgui.ImGuiIO;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 
@@ -28,6 +29,11 @@ public class KZCollisionEditor extends com.badlogic.gdx.ApplicationAdapter {
                 .getWindow().getWindowHandle();
 
         ImGui.createContext();
+        ImGuiIO io = ImGui.getIO();
+        io.setIniFilename(null);
+        io.getFonts().addFontDefault();
+        io.getFonts().build();
+
         imGuiGlfw = new ImGuiImplGlfw();
         imGuiGlfw.init(windowHandle, true);
         imGuiGl3 = new ImGuiImplGl3();
@@ -51,6 +57,7 @@ public class KZCollisionEditor extends com.badlogic.gdx.ApplicationAdapter {
         viewportRenderer.render(vpX, vpY, vpW, vpH);
 
         // Start ImGui frame
+        imGuiGl3.newFrame();
         imGuiGlfw.newFrame();
         ImGui.newFrame();
 

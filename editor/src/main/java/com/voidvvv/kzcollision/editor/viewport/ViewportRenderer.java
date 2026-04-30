@@ -110,14 +110,14 @@ public class ViewportRenderer {
     }
 
     private Texture getTexture(String sourceAssetId) {
-        Map<String, Object> cache = state.getTextureCache();
+        Map<String, Texture> cache = state.getTextureCache();
         SourceAsset asset = state.getProject().findSourceAsset(sourceAssetId);
         if (asset == null) return null;
         String key = asset.getFilePath();
-        Texture tex = (Texture) cache.get(key);
+        Texture tex = cache.get(key);
         if (tex == null) {
             try {
-                tex = new Texture(Gdx.files.internal(key));
+                tex = new Texture(Gdx.files.absolute(key));
                 cache.put(key, tex);
             } catch (Exception e) {
                 return null;
@@ -127,6 +127,10 @@ public class ViewportRenderer {
     }
 
     public void dispose() {
+        for (Texture tex : state.getTextureCache().values()) {
+            tex.dispose();
+        }
+        state.getTextureCache().clear();
         batch.dispose();
         shapes.dispose();
     }

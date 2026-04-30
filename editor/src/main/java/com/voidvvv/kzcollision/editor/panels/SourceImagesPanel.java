@@ -69,8 +69,14 @@ public class SourceImagesPanel {
         }
     }
 
+    private String getDisplayName(SourceAsset asset) {
+        String path = asset.getFilePath();
+        int lastSep = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+        return lastSep >= 0 ? path.substring(lastSep + 1) : path;
+    }
+
     private void renderAtlasAsset(SourceAsset asset) {
-        if (ImGui.collapsingHeader(asset.getFilePath() + " (ATLAS)")) {
+        if (ImGui.collapsingHeader(getDisplayName(asset) + " (ATLAS)")) {
             for (SourceRegion region : asset.getRegions()) {
                 if (ImGui.selectable("  " + region.getName())) {
                     // Selection handled via context menu
@@ -81,7 +87,7 @@ public class SourceImagesPanel {
     }
 
     private void renderSingleAsset(SourceAsset asset) {
-        if (ImGui.selectable(asset.getFilePath())) {
+        if (ImGui.selectable(getDisplayName(asset))) {
             // Selection handled via context menu
         }
         if (!asset.getRegions().isEmpty()) {
@@ -195,19 +201,22 @@ public class SourceImagesPanel {
             if (result == JFileChooser.APPROVE_OPTION) {
                 List<SourceAsset> imported = new ArrayList<>();
                 for (File file : chooser.getSelectedFiles()) {
+                    String absolutePath = file.getAbsolutePath();
                     String fileName = file.getName();
                     SourceAsset asset;
                     if (fileName.endsWith(".atlas")) {
                         asset = new SourceAsset();
-                        asset.setFilePath(fileName);
+                        asset.setFilePath(absolutePath);
                         asset.setType(AssetType.ATLAS);
-                        // For now, create one region covering the whole image.
-                        // Full atlas parsing comes in Task 17.
                         SourceRegion region = new SourceRegion(fileName, asset.getId(), null);
                         asset.getRegions().add(region);
                     } else {
-                        // SINGLE image
-                        asset = new SourceAsset(fileName);
+                        // SINGLE image — store absolute path for loading, name for display
+                        asset = new SourceAsset();
+                        asset.setType(AssetType.SINGLE);
+                        asset.setFilePath(absolutePath);
+                        SourceRegion region = new SourceRegion(fileName, asset.getId(), null);
+                        asset.getRegions().add(region);
                     }
                     imported.add(asset);
                 }
