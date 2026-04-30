@@ -64,6 +64,7 @@ public class KZCollisionEditor extends com.badlogic.gdx.ApplicationAdapter {
         panelManager.render();
 
         ImGui.render();
+        viewportInputHandler.update();
         imGuiGl3.renderDrawData(ImGui.getDrawData());
     }
 
