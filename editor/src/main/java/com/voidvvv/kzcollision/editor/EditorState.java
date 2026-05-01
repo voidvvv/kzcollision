@@ -48,4 +48,14 @@ public class EditorState {
     }
 
     public Map<String, Texture> getTextureCache() { return textureCache; }
+
+    public void reset() {
+        this.project = new Project("Untitled");
+        this.selectedAnimationId = null;
+        this.currentFrameIndex = 0;
+        this.selectedCollisionBoxId = null;
+        this.playing = false;
+        this.playbackTimer = 0f;
+        this.textureCache.clear();
+    }
 }
