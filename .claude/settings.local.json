@@ -6,7 +6,10 @@
       "Bash(git commit *)",
       "Bash(gradle editor:compileJava)",
       "Bash(echo \"EXIT: $?\")",
-      "Bash(git status *)"
+      "Bash(git status *)",
+      "Bash(gradle --version)",
+      "Bash(echo \"EXIT_CODE=$?\")",
+      "Bash(gradle editor:compileJava --console=plain --rerun-tasks)"
     ]
   }
 }

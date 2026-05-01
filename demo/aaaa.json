@@ -1,0 +1,527 @@
+{
+  "version": "1.0",
+  "name": "Untitled",
+  "sourceAssets": [
+    {
+      "id": "337f2082-428d-4010-850e-d010e77c00fd",
+      "type": "SINGLE",
+      "filePath": "C:\\myWareHouse\\dev\\gamedemo_3d\\assets\\naruduo_anim.png",
+      "regions": [
+        {
+          "id": "bb6b2011-3e0c-49c7-8116-c84b4a8adf92",
+          "name": "naruduo_anim.png",
+          "assetId": "337f2082-428d-4010-850e-d010e77c00fd",
+          "bounds": {
+            "x": 0.0,
+            "y": 0.0,
+            "width": 1254.0,
+            "height": 1254.0
+          }
+        }
+      ]
+    }
+  ],
+  "spriteFrames": [
+    {
+      "id": "92ea8fab-d8c0-43b8-9f14-74af924feb2f",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 0.0,
+        "y": 0.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "96cfe03c-6479-4f8d-a8d5-83b9e9d73ca2",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 209.0,
+        "y": 0.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "900bb217-5f48-4a72-870a-eb9bf10ef463",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 418.0,
+        "y": 0.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "771eee1f-6382-440e-8a62-e8cf4642f3bd",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 627.0,
+        "y": 0.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "18ee86bf-1bfb-44f6-9b4f-39d514fd1fe0",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 836.0,
+        "y": 0.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "a29b1e89-0e82-4f85-8414-974aed7e507a",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 1045.0,
+        "y": 0.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "f270ddb3-833e-423d-a675-ae2bfea623bc",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 0.0,
+        "y": 209.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "e46a2cc7-dfce-4a49-971b-7897c7226a69",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 209.0,
+        "y": 209.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "b018b41c-418f-4241-8c8e-4be592ae323c",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 418.0,
+        "y": 209.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "921be875-12eb-4577-8117-7e2b61632072",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 627.0,
+        "y": 209.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "02d00bcc-168e-41ad-a55d-b5229c460ccb",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 836.0,
+        "y": 209.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "e3160be9-d1c0-46c4-9bbf-41f48a804387",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 1045.0,
+        "y": 209.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "97b093ee-38ee-4535-834a-70210cb710c9",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 0.0,
+        "y": 418.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "f56ef443-d84c-46a3-a6f1-fe42542a2e93",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 209.0,
+        "y": 418.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "85d15353-93b4-42c5-b857-234b4c10bdda",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 418.0,
+        "y": 418.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "b6194276-7e67-4fdc-9809-8670868805a9",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 627.0,
+        "y": 418.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "70ead99b-ca38-4d7b-bd6f-9522dcf6b3fa",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 836.0,
+        "y": 418.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "c85a7403-b996-48dd-ba85-f8b0339f3a39",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 1045.0,
+        "y": 418.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "6633310a-9f41-4863-af6a-836ef3b926c9",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 0.0,
+        "y": 627.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "8e31fbae-1573-4776-80f6-05dc7edd4cda",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 209.0,
+        "y": 627.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "aa48d440-2faf-4f56-90dd-534bd294a0fb",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 418.0,
+        "y": 627.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "b82b2594-0a42-40d5-a5ed-e0cade77070c",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 627.0,
+        "y": 627.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "5913537b-e3b6-4e3f-9722-3bffbc26bdd1",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 836.0,
+        "y": 627.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "8db168fb-8cdf-4850-8ab5-abf5e3eb4b5f",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 1045.0,
+        "y": 627.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "14e602c7-5928-4cd6-8392-7aa9d68f663d",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 0.0,
+        "y": 836.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "a5bd3e5e-b1d0-47d6-bccd-8feeefaaabb1",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 209.0,
+        "y": 836.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "d7f8168a-58be-439e-819c-64c3b7da1d07",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 418.0,
+        "y": 836.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "173ea7b7-872b-4092-8ac8-6adbaad22087",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 627.0,
+        "y": 836.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "40ed7dab-afd5-46ea-b476-3dceb5459f93",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 836.0,
+        "y": 836.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "82167599-9b50-4564-9d42-30f2ae929c5e",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 1045.0,
+        "y": 836.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "0409ceb9-3a3c-4434-8544-b7986feb2c62",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 0.0,
+        "y": 1045.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "71ac1b72-cf40-4677-abb6-54bf6708dbf6",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 209.0,
+        "y": 1045.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "63196188-5e26-4047-ba5a-2349d9f92cc4",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 418.0,
+        "y": 1045.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "f0e861c2-0710-416f-8651-d56b49bcd818",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 627.0,
+        "y": 1045.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "af7b86cb-8dd3-4b9b-80d5-ff9a83a2e996",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 836.0,
+        "y": 1045.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "4e916587-73cf-4c5b-8e1e-a1de58c88744",
+      "sourceAssetId": "337f2082-428d-4010-850e-d010e77c00fd",
+      "sourceRegionName": "naruduo_anim.png",
+      "subRegion": {
+        "x": 1045.0,
+        "y": 1045.0,
+        "width": 209.0,
+        "height": 209.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    }
+  ],
+  "animations": [
+    {
+      "id": "2893fc65-4c0c-4c93-8bed-15a369785122",
+      "name": "New Animation",
+      "frames": [
+        {
+          "spriteFrameId": "92ea8fab-d8c0-43b8-9f14-74af924feb2f",
+          "duration": 0.15,
+          "originX": 99.960815,
+          "originY": 106.30753,
+          "placements": [],
+          "collisionBoxes": [
+            {
+              "id": "6220b36a-c2da-466e-9bcd-a7501ab833b2",
+              "x": 132.35455,
+              "y": 115.82762,
+              "width": 102.60725,
+              "height": 85.15377,
+              "label": "new_box"
+            }
+          ]
+        },
+        {
+          "spriteFrameId": "a29b1e89-0e82-4f85-8414-974aed7e507a",
+          "duration": 0.15,
+          "originX": 0.0,
+          "originY": 0.0,
+          "placements": [],
+          "collisionBoxes": []
+        }
+      ]
+    }
+  ]
+}
