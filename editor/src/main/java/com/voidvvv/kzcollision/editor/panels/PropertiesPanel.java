@@ -72,6 +72,10 @@ public class PropertiesPanel {
                 // Show edit fields for selected box
                 if (isSelected) {
                     ImGui.indent();
+                    boxXBuf.set(box.getX());
+                    boxYBuf.set(box.getY());
+                    boxWBuf.set(box.getWidth());
+                    boxHBuf.set(box.getHeight());
                     if (ImGui.inputFloat("X", boxXBuf, 1f, 10f, "%.1f")) box.setX(boxXBuf.get());
                     if (ImGui.inputFloat("Y", boxYBuf, 1f, 10f, "%.1f")) box.setY(boxYBuf.get());
                     if (ImGui.inputFloat("W", boxWBuf, 1f, 10f, "%.1f")) box.setWidth(Math.max(1, boxWBuf.get()));
