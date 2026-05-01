@@ -42,10 +42,15 @@ public class ViewportRenderer {
         Gdx.gl.glClearColor(0.12f, 0.12f, 0.18f, 1f);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
 
-        // Setup camera
+        // Setup camera — position must match ViewportCamera.screenToWorldX/Y:
+        // screenToWorldX: camX = (screenX - vw/2 - offsetX) / zoom
+        // Inverted: screenX = camX * zoom + vw/2 + offsetX
+        // OrthographicCamera: screenX = (worldX - camPos.x) / orthoZoom + vw/2
+        // Solving: camPos.x = -offsetX / zoom, orthoZoom = 1 / zoom
         OrthographicCamera cam = new OrthographicCamera(viewportWidth, viewportHeight);
-        cam.translate(camera.getOffsetX(), camera.getOffsetY());
-        cam.zoom = 1f / camera.getZoom();
+        float invZoom = 1f / camera.getZoom();
+        cam.position.set(-camera.getOffsetX() * invZoom, -camera.getOffsetY() * invZoom, 0);
+        cam.zoom = invZoom;
         cam.update();
 
         AnimationFrame frame = state.getCurrentFrame();
