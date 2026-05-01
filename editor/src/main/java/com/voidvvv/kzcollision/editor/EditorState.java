@@ -56,6 +56,9 @@ public class EditorState {
         this.selectedCollisionBoxId = null;
         this.playing = false;
         this.playbackTimer = 0f;
-        this.textureCache.clear();
+        for (Texture tex : textureCache.values()) {
+            tex.dispose();
+        }
+        textureCache.clear();
     }
 }
