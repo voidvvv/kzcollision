@@ -28,6 +28,7 @@ public class SourceImagesPanel {
     private String splitRegionId;
     private final ImInt splitRows = new ImInt(2);
     private final ImInt splitCols = new ImInt(2);
+    private boolean splitNeedsOpen;
 
     // Buffer for pending file imports (produced on Swing EDT, consumed on render thread)
     private final List<SourceAsset> pendingImports = new ArrayList<>();
@@ -108,7 +109,7 @@ public class SourceImagesPanel {
                 splitRows.set(2);
                 splitCols.set(2);
                 showSplitPopup = true;
-                ImGui.openPopup("Split##" + region.getId());
+                splitNeedsOpen = true;
             }
             ImGui.endPopup();
         }
@@ -123,12 +124,15 @@ public class SourceImagesPanel {
 
     private void renderSplitPopup() {
         String popupId = "Split##" + splitRegionId;
+        if (splitNeedsOpen) {
+            ImGui.openPopup(popupId);
+            splitNeedsOpen = false;
+        }
         if (ImGui.beginPopupModal(popupId)) {
             ImGui.text("Split region into grid");
             ImGui.inputInt("Rows", splitRows);
             ImGui.inputInt("Cols", splitCols);
 
-            // Clamp to valid range
             int rows = Math.max(1, splitRows.get());
             int cols = Math.max(1, splitCols.get());
 
