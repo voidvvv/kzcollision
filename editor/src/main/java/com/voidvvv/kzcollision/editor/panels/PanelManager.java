@@ -3,6 +3,22 @@ package com.voidvvv.kzcollision.editor.panels;
 import imgui.ImGui;
 import imgui.flag.ImGuiCond;
 
+import com.voidvvv.kzcollision.core.model.Project;
+import com.voidvvv.kzcollision.core.model.SourceAsset;
+import com.voidvvv.kzcollision.core.model.AssetType;
+import com.voidvvv.kzcollision.core.model.Rect;
+import com.voidvvv.kzcollision.core.serialization.ProjectSerializer;
+import com.voidvvv.kzcollision.editor.EditorState;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+
+import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 public class PanelManager {
     private final EditorStateProvider stateProvider;
     private final SourceImagesPanel sourceImagesPanel;
@@ -10,6 +26,10 @@ public class PanelManager {
     private final AnimationsPanel animationsPanel;
     private final AnimationControlsPanel animationControlsPanel;
     private final PropertiesPanel propertiesPanel;
+
+    private final ProjectSerializer serializer = new ProjectSerializer();
+    private String currentFilePath;
+    private final List<Runnable> pendingFileActions = new ArrayList<>();
 
     public PanelManager(EditorStateProvider stateProvider) {
         this.stateProvider = stateProvider;
@@ -21,6 +41,7 @@ public class PanelManager {
     }
 
     public void render() {
+        processPendingFileActions();
         renderMenuBar();
 
         // Source Images panel (left-top)
@@ -49,19 +70,143 @@ public class PanelManager {
         animationControlsPanel.render();
     }
 
+    private void processPendingFileActions() {
+        List<Runnable> actions;
+        synchronized (pendingFileActions) {
+            actions = new ArrayList<>(pendingFileActions);
+            pendingFileActions.clear();
+        }
+        for (Runnable action : actions) {
+            action.run();
+        }
+    }
+
     private void renderMenuBar() {
         if (ImGui.beginMainMenuBar()) {
             if (ImGui.beginMenu("File")) {
-                ImGui.menuItem("New Project");
-                ImGui.menuItem("Open Project...");
+                if (ImGui.menuItem("New Project")) {
+                    EditorState state = stateProvider.getState();
+                    state.reset();
+                    currentFilePath = null;
+                }
+                if (ImGui.menuItem("Open Project...")) {
+                    openProjectDialog();
+                }
                 ImGui.separator();
-                ImGui.menuItem("Save Project");
-                ImGui.menuItem("Save As...");
+                if (ImGui.menuItem("Save Project")) {
+                    if (currentFilePath != null) {
+                        saveProject(currentFilePath);
+                    } else {
+                        saveAsDialog();
+                    }
+                }
+                if (ImGui.menuItem("Save As...")) {
+                    saveAsDialog();
+                }
                 ImGui.separator();
-                ImGui.menuItem("Export Collision JSON");
+                if (ImGui.menuItem("Export Collision JSON")) {
+                    exportCollisionDialog();
+                }
                 ImGui.endMenu();
             }
             ImGui.endMainMenuBar();
         }
+    }
+
+    private void openProjectDialog() {
+        SwingUtilities.invokeLater(() -> {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileFilter(new FileNameExtensionFilter("Project Files (*.json)", "json"));
+            int result = chooser.showOpenDialog(null);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File file = chooser.getSelectedFile();
+                synchronized (pendingFileActions) {
+                    pendingFileActions.add(() -> loadProject(file));
+                }
+            }
+        });
+    }
+
+    private void loadProject(File file) {
+        try {
+            Project project = serializer.load(file);
+            EditorState state = stateProvider.getState();
+            state.reset();
+            state.setProject(project);
+            currentFilePath = file.getAbsolutePath();
+
+            for (SourceAsset asset : project.getSourceAssets()) {
+                if (asset.getType() == AssetType.SINGLE && asset.getFilePath() != null) {
+                    try {
+                        Texture tex = new Texture(Gdx.files.absolute(asset.getFilePath()));
+                        state.getTextureCache().put(asset.getFilePath(), tex);
+                        if (!asset.getRegions().isEmpty()) {
+                            asset.getRegions().get(0).setBounds(new Rect(0, 0, tex.getWidth(), tex.getHeight()));
+                        }
+                    } catch (Exception e) {
+                        Gdx.app.log("PanelManager", "Failed to load texture: " + asset.getFilePath(), e);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Gdx.app.log("PanelManager", "Failed to load project: " + file.getAbsolutePath(), e);
+        }
+    }
+
+    private void saveAsDialog() {
+        SwingUtilities.invokeLater(() -> {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileFilter(new FileNameExtensionFilter("Project Files (*.json)", "json"));
+            int result = chooser.showSaveDialog(null);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File file = chooser.getSelectedFile();
+                if (!file.getName().endsWith(".json")) {
+                    file = new File(file.getAbsolutePath() + ".json");
+                }
+                final File saveFile = file;
+                synchronized (pendingFileActions) {
+                    pendingFileActions.add(() -> {
+                        saveProject(saveFile.getAbsolutePath());
+                        currentFilePath = saveFile.getAbsolutePath();
+                    });
+                }
+            }
+        });
+    }
+
+    private void saveProject(String path) {
+        try {
+            serializer.save(stateProvider.getState().getProject(), new File(path));
+        } catch (Exception e) {
+            Gdx.app.log("PanelManager", "Failed to save project: " + path, e);
+        }
+    }
+
+    private void exportCollisionDialog() {
+        SwingUtilities.invokeLater(() -> {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileFilter(new FileNameExtensionFilter("Collision JSON (*.json)", "json"));
+            int result = chooser.showSaveDialog(null);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File file = chooser.getSelectedFile();
+                if (!file.getName().endsWith(".json")) {
+                    file = new File(file.getAbsolutePath() + ".json");
+                }
+                final File exportFile = file;
+                synchronized (pendingFileActions) {
+                    pendingFileActions.add(() -> {
+                        try {
+                            Project src = stateProvider.getState().getProject();
+                            Project export = new Project(src.getName());
+                            export.setAnimations(src.getAnimations());
+                            export.setSpriteFrames(src.getSpriteFrames());
+                            serializer.save(export, exportFile);
+                        } catch (Exception e) {
+                            Gdx.app.log("PanelManager", "Failed to export collision JSON: " + exportFile.getAbsolutePath(), e);
+                        }
+                    });
+                }
+            }
+        });
     }
 }
