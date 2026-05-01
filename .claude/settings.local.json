@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git commit *)",
+      "Bash(gradle editor:compileJava)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(git status *)"
+    ]
+  }
+}
