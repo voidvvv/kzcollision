@@ -20,6 +20,7 @@ public class ViewportInputHandler implements InputProcessor {
     private ResizeCorner activeCorner;
 
     private float dragStartWorldX, dragStartWorldY;
+    private float dragStartCamX, dragStartCamY;
     private float dragOrigBoxX, dragOrigBoxY, dragOrigBoxW, dragOrigBoxH;
     private float dragOrigOriginX, dragOrigOriginY;
     private float panStartLocalX, panStartLocalY;
@@ -72,10 +73,13 @@ public class ViewportInputHandler implements InputProcessor {
         }
 
         AnimationFrame frame = state.getCurrentFrame();
+        float camX = 0, camY = 0;
         float worldX = 0, worldY = 0;
         if (frame != null) {
-            worldX = camera.screenToWorldX(localX, screenWidth) + frame.getOriginX();
-            worldY = camera.screenToWorldY(localY, screenHeight) + frame.getOriginY();
+            camX = camera.screenToWorldX(localX, screenWidth);
+            camY = camera.screenToWorldY(localY, screenHeight);
+            worldX = camX + frame.getOriginX();
+            worldY = camY + frame.getOriginY();
         }
 
         // Left button just pressed
@@ -95,12 +99,12 @@ public class ViewportInputHandler implements InputProcessor {
                 }
             }
 
-            // Check origin marker
-            float originDist = (float) Math.sqrt(worldX * worldX + worldY * worldY);
+            // Check origin marker (in camera space, origin is at 0,0)
+            float originDist = (float) Math.sqrt(camX * camX + camY * camY);
             if (originDist < 10 / camera.getZoom()) {
                 dragMode = DragMode.ORIGIN;
-                dragStartWorldX = worldX;
-                dragStartWorldY = worldY;
+                dragStartCamX = camX;
+                dragStartCamY = camY;
                 dragOrigOriginX = frame.getOriginX();
                 dragOrigOriginY = frame.getOriginY();
                 return;
@@ -148,8 +152,10 @@ public class ViewportInputHandler implements InputProcessor {
                     break;
                 }
                 case ORIGIN: {
-                    frame.setOriginX(dragOrigOriginX + dx);
-                    frame.setOriginY(dragOrigOriginY + dy);
+                    float dxCam = camX - dragStartCamX;
+                    float dyCam = camY - dragStartCamY;
+                    frame.setOriginX(dragOrigOriginX + dxCam);
+                    frame.setOriginY(dragOrigOriginY + dyCam);
                     break;
                 }
                 default: break;
