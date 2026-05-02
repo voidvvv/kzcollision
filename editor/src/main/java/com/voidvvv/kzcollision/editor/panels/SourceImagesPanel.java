@@ -121,6 +121,7 @@ public class SourceImagesPanel {
         SpriteFrame frame = new SpriteFrame();
         frame.setSourceAssetId(region.getAssetId());
         frame.setSourceRegionName(region.getName());
+        frame.setSubRegion(region.getBounds());
         stateProvider.getState().getProject().getSpriteFrames().add(frame);
     }
 
