@@ -1,5 +1,7 @@
 package com.voidvvv.kzcollision.editor.panels;
 
+import com.voidvvv.kzcollision.core.AtlasParser;
+import com.voidvvv.kzcollision.core.model.AtlasRegionDescriptor;
 import com.voidvvv.kzcollision.core.model.AssetType;
 import com.voidvvv.kzcollision.core.model.Project;
 import com.voidvvv.kzcollision.core.model.Rect;
@@ -213,11 +215,12 @@ public class SourceImagesPanel {
                     String fileName = file.getName();
                     SourceAsset asset;
                     if (fileName.endsWith(".atlas")) {
+                        // Resolve the PNG by convention: same directory, same basename
+                        String pngPath = absolutePath.replaceAll("\\.atlas$", ".png");
                         asset = new SourceAsset();
-                        asset.setFilePath(absolutePath);
+                        asset.setFilePath(pngPath);
+                        asset.setAtlasFilePath(absolutePath);
                         asset.setType(AssetType.ATLAS);
-                        SourceRegion region = new SourceRegion(fileName, asset.getId(), null);
-                        asset.getRegions().add(region);
                     } else {
                         // SINGLE image — store absolute path for loading, name for display
                         asset = new SourceAsset();
@@ -259,6 +262,47 @@ public class SourceImagesPanel {
                         }
                     } catch (Exception e) {
                         Gdx.app.log("SourceImagesPanel", "Failed to load texture: " + asset.getFilePath(), e);
+                    }
+                } else if (asset.getType() == AssetType.ATLAS) {
+                    String atlasPath = asset.getAtlasFilePath();
+                    String pngPath = asset.getFilePath();
+
+                    // Verify PNG exists
+                    if (!new java.io.File(pngPath).exists()) {
+                        Gdx.app.log("SourceImagesPanel",
+                            "Atlas PNG not found: " + pngPath + " (expected next to " + atlasPath + ")");
+                        project.getSourceAssets().remove(asset);
+                        continue;
+                    }
+
+                    // Parse atlas file
+                    List<AtlasRegionDescriptor> descriptors;
+                    try {
+                        descriptors = AtlasParser.parse(new java.io.File(atlasPath));
+                    } catch (Exception e) {
+                        Gdx.app.log("SourceImagesPanel", "Failed to parse atlas: " + atlasPath, e);
+                        project.getSourceAssets().remove(asset);
+                        continue;
+                    }
+
+                    // Load the atlas PNG texture
+                    try {
+                        Texture tex = new Texture(Gdx.files.absolute(pngPath));
+                        state.getTextureCache().put(pngPath, tex);
+                    } catch (Exception e) {
+                        Gdx.app.log("SourceImagesPanel", "Failed to load atlas texture: " + pngPath, e);
+                        project.getSourceAssets().remove(asset);
+                        continue;
+                    }
+
+                    // Create SourceRegions from parsed descriptors
+                    for (AtlasRegionDescriptor desc : descriptors) {
+                        String regionName = desc.getIndex() >= 0
+                                ? desc.getName() + "_" + desc.getIndex()
+                                : desc.getName();
+                        Rect bounds = new Rect(desc.getX(), desc.getY(), desc.getWidth(), desc.getHeight());
+                        SourceRegion region = new SourceRegion(regionName, asset.getId(), bounds);
+                        asset.getRegions().add(region);
                     }
                 }
             }
