@@ -51,6 +51,9 @@ public class SpriteFramesPanel {
                     addToCurrentAnimation(frame);
                 }
                 if (ImGui.menuItem("Delete")) {
+                    if (frame.getId().equals(state.getSelectedSpriteFrameId())) {
+                        state.setSelectedSpriteFrameId(null);
+                    }
                     frames.remove(frame);
                     removed = true;
                 }
