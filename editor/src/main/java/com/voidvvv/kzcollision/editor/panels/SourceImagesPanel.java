@@ -82,7 +82,7 @@ public class SourceImagesPanel {
         if (ImGui.collapsingHeader(getDisplayName(asset) + " (ATLAS)")) {
             for (SourceRegion region : asset.getRegions()) {
                 if (ImGui.selectable("  " + region.getName())) {
-                    // Selection handled via context menu
+                    stateProvider.getState().setSelectedSourceAssetId(asset.getId());
                 }
                 renderRegionContextMenu(region);
             }
@@ -91,7 +91,7 @@ public class SourceImagesPanel {
 
     private void renderSingleAsset(SourceAsset asset) {
         if (ImGui.selectable(getDisplayName(asset))) {
-            // Selection handled via context menu
+            stateProvider.getState().setSelectedSourceAssetId(asset.getId());
         }
         if (!asset.getRegions().isEmpty()) {
             renderRegionContextMenu(asset.getRegions().get(0));
