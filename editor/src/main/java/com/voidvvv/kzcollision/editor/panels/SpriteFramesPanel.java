@@ -64,12 +64,7 @@ public class SpriteFramesPanel {
     }
 
     private String buildLabel(SpriteFrame frame) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(frame.getSourceRegionName() != null ? frame.getSourceRegionName() : "(unnamed)");
-        if (frame.getSubRegion() != null) {
-            sb.append(" [split]");
-        }
-        return sb.toString();
+        return frame.getSourceRegionName() != null ? frame.getSourceRegionName() : "(unnamed)";
     }
 
     private void addToCurrentAnimation(SpriteFrame frame) {
