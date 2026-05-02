@@ -158,13 +158,14 @@ public class SourceImagesPanel {
         }
 
         Rect bounds = region.getBounds();
-        // If no bounds are set, we cannot compute sub-regions
         if (bounds == null) {
             return;
         }
 
+        String baseName = region.getName();
         float tileWidth = bounds.width / cols;
         float tileHeight = bounds.height / rows;
+        int index = 1;
 
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
@@ -174,9 +175,10 @@ public class SourceImagesPanel {
 
                 SpriteFrame frame = new SpriteFrame();
                 frame.setSourceAssetId(region.getAssetId());
-                frame.setSourceRegionName(region.getName());
+                frame.setSourceRegionName(baseName + "_" + String.format("%03d", index));
                 frame.setSubRegion(subRegion);
                 stateProvider.getState().getProject().getSpriteFrames().add(frame);
+                index++;
             }
         }
     }
