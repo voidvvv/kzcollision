@@ -16,6 +16,8 @@ public class EditorState {
     private String selectedCollisionBoxId;
     private boolean playing = false;
     private float playbackTimer = 0f;
+    private String selectedSpriteFrameId;
+    private String selectedSourceAssetId;
     private transient Map<String, Texture> textureCache = new HashMap<>();
 
     public EditorState() {
@@ -34,6 +36,10 @@ public class EditorState {
     public void setPlaying(boolean playing) { this.playing = playing; }
     public float getPlaybackTimer() { return playbackTimer; }
     public void setPlaybackTimer(float timer) { this.playbackTimer = timer; }
+    public String getSelectedSpriteFrameId() { return selectedSpriteFrameId; }
+    public void setSelectedSpriteFrameId(String id) { this.selectedSpriteFrameId = id; }
+    public String getSelectedSourceAssetId() { return selectedSourceAssetId; }
+    public void setSelectedSourceAssetId(String id) { this.selectedSourceAssetId = id; }
 
     public Animation getSelectedAnimation() {
         if (selectedAnimationId == null) return null;
@@ -56,6 +62,8 @@ public class EditorState {
         this.selectedCollisionBoxId = null;
         this.playing = false;
         this.playbackTimer = 0f;
+        this.selectedSpriteFrameId = null;
+        this.selectedSourceAssetId = null;
         for (Texture tex : textureCache.values()) {
             tex.dispose();
         }
