@@ -26,6 +26,8 @@ public class PanelManager {
     private final AnimationsPanel animationsPanel;
     private final AnimationControlsPanel animationControlsPanel;
     private final PropertiesPanel propertiesPanel;
+    private final SourceImagePreviewPanel sourceImagePreviewPanel;
+    private final SpriteFramePreviewPanel spriteFramePreviewPanel;
 
     private final ProjectSerializer serializer = new ProjectSerializer();
     private String currentFilePath;
@@ -38,6 +40,8 @@ public class PanelManager {
         this.animationsPanel = new AnimationsPanel(stateProvider);
         this.animationControlsPanel = new AnimationControlsPanel(stateProvider);
         this.propertiesPanel = new PropertiesPanel(stateProvider);
+        this.sourceImagePreviewPanel = new SourceImagePreviewPanel(stateProvider);
+        this.spriteFramePreviewPanel = new SpriteFramePreviewPanel(stateProvider);
     }
 
     public void render() {
@@ -64,9 +68,19 @@ public class PanelManager {
         ImGui.setNextWindowSize(240, 350, ImGuiCond.Once);
         propertiesPanel.render();
 
-        // Controls panel (bottom bar)
-        ImGui.setNextWindowPos(220, 680, ImGuiCond.Once);
-        ImGui.setNextWindowSize(820, 40, ImGuiCond.Once);
+        // Source Image Preview panel (bottom-left)
+        ImGui.setNextWindowPos(220, 500, ImGuiCond.Once);
+        ImGui.setNextWindowSize(300, 200, ImGuiCond.Once);
+        sourceImagePreviewPanel.render();
+
+        // SpriteFrame Preview panel (bottom-center)
+        ImGui.setNextWindowPos(520, 500, ImGuiCond.Once);
+        ImGui.setNextWindowSize(300, 200, ImGuiCond.Once);
+        spriteFramePreviewPanel.render();
+
+        // Controls panel (bottom-right)
+        ImGui.setNextWindowPos(820, 500, ImGuiCond.Once);
+        ImGui.setNextWindowSize(220, 200, ImGuiCond.Once);
         animationControlsPanel.render();
     }
 
