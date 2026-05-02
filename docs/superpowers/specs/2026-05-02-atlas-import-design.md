@@ -34,7 +34,7 @@ New utility class in `com.voidvvv.kzcollision.core`:
 - Output: `List<AtlasRegionDescriptor>`
 - Parses the standard libGDX TextureAtlas text format:
   - First line: PNG path (ignored for lookup; we use convention-based resolution)
-  - Region entries: name line followed by `bounds: x, y, width, height`, `offset: x, y`, `original: width, height`, `index: N`, optional `rotate: true`
+  - Region entries: name line followed by `rotate: true/false`, `xy: x, y`, `size: width, height`, `orig: width, height`, `offset: x, y`, `index: N`
 - No libGDX dependency — pure Java file I/O and text parsing
 - Throws `IOException` on file errors, `IllegalArgumentException` on malformed input
 
