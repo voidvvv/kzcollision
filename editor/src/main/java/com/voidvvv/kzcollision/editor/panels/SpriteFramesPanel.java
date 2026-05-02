@@ -36,7 +36,7 @@ public class SpriteFramesPanel {
             String label = buildLabel(frame);
 
             if (ImGui.selectable(label)) {
-                // Single click selects the frame (future use)
+                state.setSelectedSpriteFrameId(frame.getId());
             }
 
             // Double-click: add to current animation
