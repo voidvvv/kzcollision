@@ -12,6 +12,8 @@ import com.voidvvv.kzcollision.core.serialization.ProjectSerializer;
 import com.voidvvv.kzcollision.editor.EditorState;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.utils.ObjectSet;
 
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
@@ -151,19 +153,26 @@ public class PanelManager {
             currentFilePath = file.getAbsolutePath();
 
             for (SourceAsset asset : project.getSourceAssets()) {
-                if (asset.getFilePath() != null) {
-                    try {
+                if (asset.getFilePath() == null) continue;
+                try {
+                    if (asset.getType() == AssetType.SINGLE) {
                         Texture tex = new Texture(Gdx.files.absolute(asset.getFilePath()));
                         state.getTextureCache().put(asset.getFilePath(), tex);
-                        if (asset.getType() == AssetType.SINGLE && !asset.getRegions().isEmpty()) {
+                        if (!asset.getRegions().isEmpty()) {
                             SourceRegion region = asset.getRegions().get(0);
                             if (region.getBounds() == null) {
                                 region.setBounds(new Rect(0, 0, tex.getWidth(), tex.getHeight()));
                             }
                         }
-                    } catch (Exception e) {
-                        Gdx.app.log("PanelManager", "Failed to load texture: " + asset.getFilePath(), e);
+                    } else if (asset.getType() == AssetType.ATLAS && asset.getAtlasFilePath() != null) {
+                        TextureAtlas atlas = new TextureAtlas(Gdx.files.absolute(asset.getAtlasFilePath()));
+                        ObjectSet<Texture> atlasTextures = atlas.getTextures();
+                        if (atlasTextures.size > 0) {
+                            state.getTextureCache().put(asset.getFilePath(), atlasTextures.first());
+                        }
                     }
+                } catch (Exception e) {
+                    Gdx.app.log("PanelManager", "Failed to load texture: " + asset.getFilePath(), e);
                 }
             }
         } catch (Exception e) {

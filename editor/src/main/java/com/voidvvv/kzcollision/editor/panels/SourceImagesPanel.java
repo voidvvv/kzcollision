@@ -1,7 +1,5 @@
 package com.voidvvv.kzcollision.editor.panels;
 
-import com.voidvvv.kzcollision.core.AtlasParser;
-import com.voidvvv.kzcollision.core.model.AtlasRegionDescriptor;
 import com.voidvvv.kzcollision.core.model.AssetType;
 import com.voidvvv.kzcollision.core.model.Project;
 import com.voidvvv.kzcollision.core.model.Rect;
@@ -11,6 +9,8 @@ import com.voidvvv.kzcollision.core.model.SpriteFrame;
 import com.voidvvv.kzcollision.editor.EditorState;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.utils.ObjectSet;
 import imgui.ImGui;
 import imgui.type.ImInt;
 
@@ -220,10 +220,8 @@ public class SourceImagesPanel {
                     String fileName = file.getName();
                     SourceAsset asset;
                     if (fileName.endsWith(".atlas")) {
-                        // Resolve the PNG by convention: same directory, same basename
-                        String pngPath = absolutePath.replaceAll("\\.atlas$", ".png");
                         asset = new SourceAsset();
-                        asset.setFilePath(pngPath);
+                        asset.setFilePath(absolutePath);
                         asset.setAtlasFilePath(absolutePath);
                         asset.setType(AssetType.ATLAS);
                     } else {
@@ -270,44 +268,29 @@ public class SourceImagesPanel {
                     }
                 } else if (asset.getType() == AssetType.ATLAS) {
                     String atlasPath = asset.getAtlasFilePath();
-                    String pngPath = asset.getFilePath();
 
-                    // Verify PNG exists
-                    if (!new java.io.File(pngPath).exists()) {
-                        Gdx.app.log("SourceImagesPanel",
-                            "Atlas PNG not found: " + pngPath + " (expected next to " + atlasPath + ")");
-                        project.getSourceAssets().remove(asset);
-                        continue;
-                    }
-
-                    // Parse atlas file
-                    List<AtlasRegionDescriptor> descriptors;
+                    TextureAtlas atlas;
                     try {
-                        descriptors = AtlasParser.parse(new java.io.File(atlasPath));
+                        atlas = new TextureAtlas(Gdx.files.absolute(atlasPath));
                     } catch (Exception e) {
-                        Gdx.app.log("SourceImagesPanel", "Failed to parse atlas: " + atlasPath, e);
+                        Gdx.app.log("SourceImagesPanel", "Failed to load atlas: " + atlasPath, e);
                         project.getSourceAssets().remove(asset);
                         continue;
                     }
 
-                    // Load the atlas PNG texture
-                    try {
-                        Texture tex = new Texture(Gdx.files.absolute(pngPath));
-                        state.getTextureCache().put(pngPath, tex);
-                    } catch (Exception e) {
-                        Gdx.app.log("SourceImagesPanel", "Failed to load atlas texture: " + pngPath, e);
-                        project.getSourceAssets().remove(asset);
-                        continue;
+                    ObjectSet<Texture> atlasTextures = atlas.getTextures();
+                    if (atlasTextures.size > 0) {
+                        state.getTextureCache().put(asset.getFilePath(), atlasTextures.first());
                     }
 
-                    // Create SourceRegions from parsed descriptors
-                    for (AtlasRegionDescriptor desc : descriptors) {
-                        String regionName = desc.getIndex() >= 0
-                                ? desc.getName() + "_" + desc.getIndex()
-                                : desc.getName();
-                        Rect bounds = new Rect(desc.getX(), desc.getY(), desc.getWidth(), desc.getHeight());
-                        SourceRegion region = new SourceRegion(regionName, asset.getId(), bounds);
-                        asset.getRegions().add(region);
+                    for (TextureAtlas.AtlasRegion region : atlas.getRegions()) {
+                        String regionName = region.index >= 0
+                                ? region.name + "_" + region.index
+                                : region.name;
+                        Rect bounds = new Rect(region.getRegionX(), region.getRegionY(),
+                                region.getRegionWidth(), region.getRegionHeight());
+                        SourceRegion srcRegion = new SourceRegion(regionName, asset.getId(), bounds);
+                        asset.getRegions().add(srcRegion);
                     }
                 }
             }
