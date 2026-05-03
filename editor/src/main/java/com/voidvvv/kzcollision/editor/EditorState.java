@@ -18,6 +18,7 @@ public class EditorState {
     private float playbackTimer = 0f;
     private String selectedSpriteFrameId;
     private String selectedSourceAssetId;
+    private String selectedSourceRegionId;
     private transient Map<String, Texture> textureCache = new HashMap<>();
 
     public EditorState() {
@@ -40,6 +41,8 @@ public class EditorState {
     public void setSelectedSpriteFrameId(String id) { this.selectedSpriteFrameId = id; }
     public String getSelectedSourceAssetId() { return selectedSourceAssetId; }
     public void setSelectedSourceAssetId(String id) { this.selectedSourceAssetId = id; }
+    public String getSelectedSourceRegionId() { return selectedSourceRegionId; }
+    public void setSelectedSourceRegionId(String id) { this.selectedSourceRegionId = id; }
 
     public Animation getSelectedAnimation() {
         if (selectedAnimationId == null) return null;
@@ -64,6 +67,7 @@ public class EditorState {
         this.playbackTimer = 0f;
         this.selectedSpriteFrameId = null;
         this.selectedSourceAssetId = null;
+        this.selectedSourceRegionId = null;
         for (Texture tex : textureCache.values()) {
             tex.dispose();
         }
