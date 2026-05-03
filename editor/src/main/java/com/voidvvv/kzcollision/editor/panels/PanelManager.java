@@ -5,6 +5,7 @@ import imgui.flag.ImGuiCond;
 
 import com.voidvvv.kzcollision.core.model.Project;
 import com.voidvvv.kzcollision.core.model.SourceAsset;
+import com.voidvvv.kzcollision.core.model.SourceRegion;
 import com.voidvvv.kzcollision.core.model.AssetType;
 import com.voidvvv.kzcollision.core.model.Rect;
 import com.voidvvv.kzcollision.core.serialization.ProjectSerializer;
@@ -150,12 +151,15 @@ public class PanelManager {
             currentFilePath = file.getAbsolutePath();
 
             for (SourceAsset asset : project.getSourceAssets()) {
-                if (asset.getType() == AssetType.SINGLE && asset.getFilePath() != null) {
+                if (asset.getFilePath() != null) {
                     try {
                         Texture tex = new Texture(Gdx.files.absolute(asset.getFilePath()));
                         state.getTextureCache().put(asset.getFilePath(), tex);
-                        if (!asset.getRegions().isEmpty()) {
-                            asset.getRegions().get(0).setBounds(new Rect(0, 0, tex.getWidth(), tex.getHeight()));
+                        if (asset.getType() == AssetType.SINGLE && !asset.getRegions().isEmpty()) {
+                            SourceRegion region = asset.getRegions().get(0);
+                            if (region.getBounds() == null) {
+                                region.setBounds(new Rect(0, 0, tex.getWidth(), tex.getHeight()));
+                            }
                         }
                     } catch (Exception e) {
                         Gdx.app.log("PanelManager", "Failed to load texture: " + asset.getFilePath(), e);
