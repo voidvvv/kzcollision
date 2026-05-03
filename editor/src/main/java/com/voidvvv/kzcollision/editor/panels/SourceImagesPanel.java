@@ -67,7 +67,7 @@ public class SourceImagesPanel {
 
         for (SourceAsset asset : project.getSourceAssets()) {
             if (asset.getType() == AssetType.ATLAS) {
-                renderAtlasAsset(asset);
+                renderAtlasRegions(asset);
             } else {
                 renderSingleAsset(asset);
             }
@@ -80,20 +80,24 @@ public class SourceImagesPanel {
         return lastSep >= 0 ? path.substring(lastSep + 1) : path;
     }
 
-    private void renderAtlasAsset(SourceAsset asset) {
-        if (ImGui.collapsingHeader(getDisplayName(asset) + " (ATLAS)")) {
-            for (SourceRegion region : asset.getRegions()) {
-                if (ImGui.selectable("  " + region.getName())) {
-                    stateProvider.getState().setSelectedSourceAssetId(asset.getId());
-                }
-                renderRegionContextMenu(region);
+    private void renderAtlasRegions(SourceAsset asset) {
+        for (SourceRegion region : asset.getRegions()) {
+            boolean selected = region.getId().equals(stateProvider.getState().getSelectedSourceRegionId());
+            if (ImGui.selectable(region.getName(), selected)) {
+                stateProvider.getState().setSelectedSourceAssetId(asset.getId());
+                stateProvider.getState().setSelectedSourceRegionId(region.getId());
             }
+            renderRegionContextMenu(region);
         }
     }
 
     private void renderSingleAsset(SourceAsset asset) {
-        if (ImGui.selectable(getDisplayName(asset))) {
+        boolean selected = asset.getId().equals(stateProvider.getState().getSelectedSourceAssetId());
+        if (ImGui.selectable(getDisplayName(asset), selected)) {
             stateProvider.getState().setSelectedSourceAssetId(asset.getId());
+            if (!asset.getRegions().isEmpty()) {
+                stateProvider.getState().setSelectedSourceRegionId(asset.getRegions().get(0).getId());
+            }
         }
         if (!asset.getRegions().isEmpty()) {
             renderRegionContextMenu(asset.getRegions().get(0));
