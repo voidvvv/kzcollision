@@ -9,7 +9,17 @@
       "Bash(git status *)",
       "Bash(gradle --version)",
       "Bash(echo \"EXIT_CODE=$?\")",
-      "Bash(gradle editor:compileJava --console=plain --rerun-tasks)"
+      "Bash(gradle editor:compileJava --console=plain --rerun-tasks)",
+      "Bash(./gradlew :editor:compileJava)",
+      "Bash(bash -c \"./gradlew :editor:compileJava\")",
+      "Bash(cmd.exe /c \"gradlew.bat :editor:compileJava 2>&1\")",
+      "Bash(cmd.exe /c \".\\\\gradlew.bat :editor:compileJava 2>&1\")",
+      "Bash(cmd.exe /c \".\\\\gradlew.bat :editor:compileJava\")",
+      "Bash(bash gradlew *)",
+      "Bash(echo \"EXIT CODE: $?\")",
+      "Bash(./gradlew build *)",
+      "Bash(./gradlew clean *)",
+      "Bash(./gradlew :core:test)"
     ]
   }
 }
