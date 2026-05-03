@@ -5,8 +5,10 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.voidvvv.kzcollision.core.model.AnimationFrame;
+import com.voidvvv.kzcollision.core.model.AssetType;
 import com.voidvvv.kzcollision.core.model.CollisionBox;
 import com.voidvvv.kzcollision.core.model.Rect;
 import com.voidvvv.kzcollision.core.model.SourceAsset;
@@ -67,10 +69,9 @@ public class ViewportRenderer {
                     float drawY = -originY;
                     if (spriteFrame.getSubRegion() != null) {
                         Rect sr = spriteFrame.getSubRegion();
-                        batch.draw(texture, drawX, drawY, sr.width, sr.height,
-                            (int) sr.x, (int) (texture.getHeight() - sr.y - sr.height),
-                            (int) sr.width, (int) sr.height,
-                            false, false);
+                        TextureRegion tr = new TextureRegion(texture,
+                            (int) sr.x, (int) sr.y, (int) sr.width, (int) sr.height);
+                        batch.draw(tr, drawX, drawY);
                     } else {
                         batch.draw(texture, drawX, drawY);
                     }
@@ -139,7 +140,7 @@ public class ViewportRenderer {
         if (asset == null) return null;
         String key = asset.getFilePath();
         Texture tex = cache.get(key);
-        if (tex == null) {
+        if (tex == null && asset.getType() == AssetType.SINGLE) {
             try {
                 tex = new Texture(Gdx.files.absolute(key));
                 cache.put(key, tex);
