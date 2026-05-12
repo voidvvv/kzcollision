@@ -1,0 +1,179 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1777484274317,
+  "projectRoot": "C:\\myFiles\\dev\\project\\kzcollision\\kzcollision",
+  "techStack": {
+    "languages": [
+      {
+        "name": "Java/Kotlin",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "build.gradle"
+        ]
+      }
+    ],
+    "frameworks": [],
+    "packageManager": "gradle",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "assets"
+    ],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "assets": {
+      "path": "assets",
+      "purpose": "Static assets",
+      "fileCount": 3,
+      "lastAccessed": 1777484274306,
+      "keyFiles": [
+        "assets.txt",
+        "hs_err_pid16404.log",
+        "libgdx.png"
+      ]
+    },
+    "build": {
+      "path": "build",
+      "purpose": "Build output",
+      "fileCount": 0,
+      "lastAccessed": 1777484274306,
+      "keyFiles": []
+    },
+    "core": {
+      "path": "core",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1777484274306,
+      "keyFiles": [
+        "build.gradle"
+      ]
+    },
+    "editor": {
+      "path": "editor",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1777484274307,
+      "keyFiles": [
+        "build.gradle"
+      ]
+    },
+    "gradle": {
+      "path": "gradle",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1777484274307,
+      "keyFiles": [
+        "gradle-daemon-jvm.properties"
+      ]
+    },
+    "sdk": {
+      "path": "sdk",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1777484274307,
+      "keyFiles": [
+        "build.gradle"
+      ]
+    },
+    "core\\build": {
+      "path": "core\\build",
+      "purpose": "Build output",
+      "fileCount": 0,
+      "lastAccessed": 1777484274308,
+      "keyFiles": []
+    },
+    "core\\src": {
+      "path": "core\\src",
+      "purpose": "Source code",
+      "fileCount": 0,
+      "lastAccessed": 1777484274308,
+      "keyFiles": []
+    },
+    "editor\\build": {
+      "path": "editor\\build",
+      "purpose": "Build output",
+      "fileCount": 0,
+      "lastAccessed": 1777484274309,
+      "keyFiles": []
+    },
+    "editor\\src": {
+      "path": "editor\\src",
+      "purpose": "Source code",
+      "fileCount": 0,
+      "lastAccessed": 1777484274309,
+      "keyFiles": []
+    },
+    "sdk\\build": {
+      "path": "sdk\\build",
+      "purpose": "Build output",
+      "fileCount": 0,
+      "lastAccessed": 1777484274309,
+      "keyFiles": []
+    },
+    "sdk\\src": {
+      "path": "sdk\\src",
+      "purpose": "Source code",
+      "fileCount": 0,
+      "lastAccessed": 1777484274309,
+      "keyFiles": []
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\panels\\PanelManager.java",
+      "accessCount": 6,
+      "lastAccessed": 1778598353703,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\panels\\SourceImagesPanel.java",
+      "accessCount": 4,
+      "lastAccessed": 1778598397842,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\KZCollisionEditor.java",
+      "accessCount": 2,
+      "lastAccessed": 1778598176186,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\viewport\\ViewportRenderer.java",
+      "accessCount": 2,
+      "lastAccessed": 1778598176557,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\ImGuiLauncher.java",
+      "accessCount": 1,
+      "lastAccessed": 1777484374189,
+      "type": "file"
+    },
+    {
+      "path": "",
+      "accessCount": 1,
+      "lastAccessed": 1778598409877,
+      "type": "directory"
+    }
+  ],
+  "userDirectives": []
+}

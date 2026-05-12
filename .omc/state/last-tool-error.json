@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"cd \\\"C:/myFiles/dev/project/kzcollision/kzcollision\\\" && ./gradlew :sdk:test 2>&1\",\"timeout\":120000,\"description\":\"Run SDK unit tests\"}",
+  "error": "Exit code 1\nC:\\myFiles\\dev\\project\\kzcollision\\kzcollision\\sdk\\src\\test\\java\\com\\voidvvv\\kzcollision\\sdk\\KZCollisionLoaderTest.java:40: 错误: 不兼容的类型: com.voidvvv.kzcollision.sdk.CollisionBox无法转换为com.voidvvv.kzcollision.core.model.CollisionBox\n        frame.getCollisionBoxes().add(box);\n                                      ^\r\nC:\\myFiles\\dev\\project\\kzcollision\\kzcollision\\sdk\\src\\test\\java\\com\\voidvvv\\kzcollision\\sdk\\KZCollisionLoaderTest.java:90: 错误: 不兼容的类型: com.voidvvv.kzcollision.sdk.CollisionB...",
+  "timestamp": "2026-04-29T17:18:50.620Z",
+  "retry_count": 1
+}
