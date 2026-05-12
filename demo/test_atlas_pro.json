@@ -1,0 +1,146 @@
+{
+  "version": "1.0",
+  "name": "Untitled",
+  "sourceAssets": [
+    {
+      "id": "2c241c5b-2294-497f-91dd-825e9d0d2849",
+      "type": "ATLAS",
+      "filePath": "C:\\Users\\voidvvv\\Documents\\图形\\test\\abc.atlas",
+      "atlasFilePath": "C:\\Users\\voidvvv\\Documents\\图形\\test\\abc.atlas",
+      "regions": [
+        {
+          "id": "f17751ef-7a55-45cd-a9bf-2d5e6d89b7b7",
+          "name": "awesomeface",
+          "assetId": "2c241c5b-2294-497f-91dd-825e9d0d2849",
+          "bounds": {
+            "x": 1361.0,
+            "y": 173.0,
+            "width": 512.0,
+            "height": 512.0
+          }
+        },
+        {
+          "id": "a1c38f8b-c44c-417b-bcd5-734b81f2bf55",
+          "name": "back",
+          "assetId": "2c241c5b-2294-497f-91dd-825e9d0d2849",
+          "bounds": {
+            "x": 2.0,
+            "y": 2.0,
+            "width": 683.0,
+            "height": 683.0
+          }
+        },
+        {
+          "id": "37848f05-58bd-4b90-9239-4148f221de47",
+          "name": "xxcard",
+          "assetId": "2c241c5b-2294-497f-91dd-825e9d0d2849",
+          "bounds": {
+            "x": 687.0,
+            "y": 13.0,
+            "width": 672.0,
+            "height": 672.0
+          }
+        }
+      ]
+    }
+  ],
+  "spriteFrames": [
+    {
+      "id": "3f9a3a74-1c72-47e1-806a-0689d3aa1a12",
+      "sourceAssetId": "2c241c5b-2294-497f-91dd-825e9d0d2849",
+      "sourceRegionName": "awesomeface",
+      "subRegion": {
+        "x": 1361.0,
+        "y": 173.0,
+        "width": 512.0,
+        "height": 512.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "7c0d7993-5dbd-4cab-a941-c091a987eea6",
+      "sourceAssetId": "2c241c5b-2294-497f-91dd-825e9d0d2849",
+      "sourceRegionName": "back",
+      "subRegion": {
+        "x": 2.0,
+        "y": 2.0,
+        "width": 683.0,
+        "height": 683.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "id": "20a8fa85-4bea-4192-a809-4b3244621b11",
+      "sourceAssetId": "2c241c5b-2294-497f-91dd-825e9d0d2849",
+      "sourceRegionName": "xxcard",
+      "subRegion": {
+        "x": 687.0,
+        "y": 13.0,
+        "width": 672.0,
+        "height": 672.0
+      },
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    }
+  ],
+  "animations": [
+    {
+      "id": "316ed8bd-3e52-42ac-84ad-5ce345572d46",
+      "name": "New Animation",
+      "frames": [
+        {
+          "spriteFrameId": "3f9a3a74-1c72-47e1-806a-0689d3aa1a12",
+          "duration": 0.15,
+          "originX": 0.0,
+          "originY": 0.0,
+          "placements": [],
+          "collisionBoxes": [
+            {
+              "id": "414586e1-55e3-48d1-87e0-58041a76bc3a",
+              "x": 112.52587,
+              "y": 124.72653,
+              "width": 38.0,
+              "height": 106.46361,
+              "label": "new_box"
+            }
+          ]
+        },
+        {
+          "spriteFrameId": "7c0d7993-5dbd-4cab-a941-c091a987eea6",
+          "duration": 0.15,
+          "originX": 0.0,
+          "originY": 0.0,
+          "placements": [],
+          "collisionBoxes": [
+            {
+              "id": "a7a6ad75-2dd8-4f23-be8b-6e0d10bc4245",
+              "x": 119.89606,
+              "y": 130.31131,
+              "width": 171.61926,
+              "height": 63.647034,
+              "label": "new_box"
+            }
+          ]
+        },
+        {
+          "spriteFrameId": "20a8fa85-4bea-4192-a809-4b3244621b11",
+          "duration": 0.15,
+          "originX": 143.39865,
+          "originY": 37.17743,
+          "placements": [],
+          "collisionBoxes": [
+            {
+              "id": "301dc2ba-6b99-4efe-82dc-89368bc7da38",
+              "x": 133.23897,
+              "y": 164.3601,
+              "width": 162.31131,
+              "height": 132.52586
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

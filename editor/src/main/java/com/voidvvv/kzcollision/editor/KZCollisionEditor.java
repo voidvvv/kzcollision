@@ -12,6 +12,7 @@ import com.voidvvv.kzcollision.editor.viewport.ViewportInputHandler;
 import com.voidvvv.kzcollision.editor.viewport.ViewportRenderer;
 
 import imgui.ImGui;
+import imgui.ImGuiIO;
 import imgui.gl3.ImGuiImplGl3;
 import imgui.glfw.ImGuiImplGlfw;
 
@@ -44,6 +45,11 @@ public class KZCollisionEditor extends com.badlogic.gdx.ApplicationAdapter imple
                 .getWindow().getWindowHandle();
 
         ImGui.createContext();
+        ImGuiIO io = ImGui.getIO();
+        io.setIniFilename(null);
+        io.getFonts().addFontDefault();
+        io.getFonts().build();
+
         imGuiGlfw = new ImGuiImplGlfw();
         imGuiGlfw.init(windowHandle, true);
         imGuiGl3 = new ImGuiImplGl3();
@@ -61,18 +67,21 @@ public class KZCollisionEditor extends com.badlogic.gdx.ApplicationAdapter imple
         Gdx.gl.glClearColor(0.15f, 0.15f, 0.2f, 1f);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
 
-        // Render viewport first (background layer)
-        float vpX = 220, vpY = 0, vpW = 820, vpH = 660;
-        viewportInputHandler.setViewportBounds(vpX, vpY, vpW, vpH);
-        viewportRenderer.render(vpX, vpY, vpW, vpH);
+        // Render viewport (full-screen behind ImGui panels)
+        float vpW = Gdx.graphics.getWidth();
+        float vpH = Gdx.graphics.getHeight();
+        viewportRenderer.render(0, 0, vpW, vpH);
 
-        // ImGui on top
+        // Start ImGui frame
+        imGuiGl3.newFrame();
+
         imGuiGlfw.newFrame();
         ImGui.newFrame();
 
         panelManager.render();
 
         ImGui.render();
+        viewportInputHandler.update();
         imGuiGl3.renderDrawData(ImGui.getDrawData());
     }
 

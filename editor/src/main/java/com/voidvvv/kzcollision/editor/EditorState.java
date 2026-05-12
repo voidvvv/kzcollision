@@ -4,6 +4,8 @@ import com.voidvvv.kzcollision.core.model.Animation;
 import com.voidvvv.kzcollision.core.model.AnimationFrame;
 import com.voidvvv.kzcollision.core.model.Project;
 
+import com.badlogic.gdx.graphics.Texture;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,7 +16,10 @@ public class EditorState {
     private String selectedCollisionBoxId;
     private boolean playing = false;
     private float playbackTimer = 0f;
-    private transient Map<String, Object> textureCache = new HashMap<>();
+    private String selectedSpriteFrameId;
+    private String selectedSourceAssetId;
+    private String selectedSourceRegionId;
+    private transient Map<String, Texture> textureCache = new HashMap<>();
 
     public EditorState() {
         this.project = new Project("Untitled");
@@ -32,6 +37,12 @@ public class EditorState {
     public void setPlaying(boolean playing) { this.playing = playing; }
     public float getPlaybackTimer() { return playbackTimer; }
     public void setPlaybackTimer(float timer) { this.playbackTimer = timer; }
+    public String getSelectedSpriteFrameId() { return selectedSpriteFrameId; }
+    public void setSelectedSpriteFrameId(String id) { this.selectedSpriteFrameId = id; }
+    public String getSelectedSourceAssetId() { return selectedSourceAssetId; }
+    public void setSelectedSourceAssetId(String id) { this.selectedSourceAssetId = id; }
+    public String getSelectedSourceRegionId() { return selectedSourceRegionId; }
+    public void setSelectedSourceRegionId(String id) { this.selectedSourceRegionId = id; }
 
     public Animation getSelectedAnimation() {
         if (selectedAnimationId == null) return null;
@@ -45,5 +56,21 @@ public class EditorState {
         return anim.getFrames().get(idx);
     }
 
-    public Map<String, Object> getTextureCache() { return textureCache; }
+    public Map<String, Texture> getTextureCache() { return textureCache; }
+
+    public void reset() {
+        this.project = new Project("Untitled");
+        this.selectedAnimationId = null;
+        this.currentFrameIndex = 0;
+        this.selectedCollisionBoxId = null;
+        this.playing = false;
+        this.playbackTimer = 0f;
+        this.selectedSpriteFrameId = null;
+        this.selectedSourceAssetId = null;
+        this.selectedSourceRegionId = null;
+        for (Texture tex : textureCache.values()) {
+            tex.dispose();
+        }
+        textureCache.clear();
+    }
 }

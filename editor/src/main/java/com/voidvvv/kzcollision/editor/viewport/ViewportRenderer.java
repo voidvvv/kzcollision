@@ -5,8 +5,10 @@ import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.voidvvv.kzcollision.core.model.AnimationFrame;
+import com.voidvvv.kzcollision.core.model.AssetType;
 import com.voidvvv.kzcollision.core.model.CollisionBox;
 import com.voidvvv.kzcollision.core.model.Rect;
 import com.voidvvv.kzcollision.core.model.SourceAsset;
@@ -44,10 +46,12 @@ public class ViewportRenderer {
         Gdx.gl.glClearColor(0.12f, 0.12f, 0.18f, 1f);
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
 
-        // Setup camera
+        // Setup camera — position must match ViewportCamera.screenToWorldX/Y
+        float invZoom = 1f / camera.getZoom();
         cam.setToOrtho(false, viewportWidth, viewportHeight);
-        cam.position.set(viewportWidth / 2f + camera.getOffsetX(), viewportHeight / 2f + camera.getOffsetY(), 0);
-        cam.zoom = 1f / camera.getZoom();
+        cam.position.set(-camera.getOffsetX() * invZoom, -camera.getOffsetY() * invZoom, 0);
+        cam.zoom = invZoom;
+
         cam.update();
 
         AnimationFrame frame = state.getCurrentFrame();
@@ -66,10 +70,9 @@ public class ViewportRenderer {
                     float drawY = -originY;
                     if (spriteFrame.getSubRegion() != null) {
                         Rect sr = spriteFrame.getSubRegion();
-                        batch.draw(texture, drawX, drawY, sr.width, sr.height,
-                            (int) sr.x, (int) (texture.getHeight() - sr.y - sr.height),
-                            (int) sr.width, (int) sr.height,
-                            false, false);
+                        TextureRegion tr = new TextureRegion(texture,
+                            (int) sr.x, (int) sr.y, (int) sr.width, (int) sr.height);
+                        batch.draw(tr, drawX, drawY);
                     } else {
                         batch.draw(texture, drawX, drawY);
                     }
@@ -90,6 +93,27 @@ public class ViewportRenderer {
                 shapes.rect(box.getX() - originX, box.getY() - originY, box.getWidth(), box.getHeight());
             }
             shapes.end();
+
+            // Draw resize handles on selected box
+            if (selectedBoxId != null) {
+                for (CollisionBox box : frame.getCollisionBoxes()) {
+                    if (box.getId().equals(selectedBoxId)) {
+                        float handleSize = 6f / camera.getZoom();
+                        float half = handleSize / 2f;
+                        float bx = box.getX() - originX;
+                        float by = box.getY() - originY;
+
+                        shapes.begin(ShapeRenderer.ShapeType.Filled);
+                        shapes.setColor(1f, 1f, 1f, 1f);
+                        shapes.rect(bx - half, by - half, handleSize, handleSize);
+                        shapes.rect(bx + box.getWidth() - half, by - half, handleSize, handleSize);
+                        shapes.rect(bx - half, by + box.getHeight() - half, handleSize, handleSize);
+                        shapes.rect(bx + box.getWidth() - half, by + box.getHeight() - half, handleSize, handleSize);
+                        shapes.end();
+                        break;
+                    }
+                }
+            }
 
             // Draw origin marker
             shapes.begin(ShapeRenderer.ShapeType.Filled);
@@ -112,14 +136,14 @@ public class ViewportRenderer {
     }
 
     private Texture getTexture(String sourceAssetId) {
-        Map<String, Object> cache = state.getTextureCache();
+        Map<String, Texture> cache = state.getTextureCache();
         SourceAsset asset = state.getProject().findSourceAsset(sourceAssetId);
         if (asset == null) return null;
         String key = asset.getFilePath();
-        Texture tex = (Texture) cache.get(key);
-        if (tex == null) {
+        Texture tex = cache.get(key);
+        if (tex == null && asset.getType() == AssetType.SINGLE) {
             try {
-                tex = new Texture(Gdx.files.internal(key));
+                tex = new Texture(Gdx.files.absolute(key));
                 cache.put(key, tex);
             } catch (Exception e) {
                 return null;
@@ -129,6 +153,10 @@ public class ViewportRenderer {
     }
 
     public void dispose() {
+        for (Texture tex : state.getTextureCache().values()) {
+            tex.dispose();
+        }
+        state.getTextureCache().clear();
         batch.dispose();
         shapes.dispose();
     }

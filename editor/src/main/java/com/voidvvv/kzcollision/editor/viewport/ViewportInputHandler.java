@@ -6,77 +6,108 @@ import com.voidvvv.kzcollision.core.model.AnimationFrame;
 import com.voidvvv.kzcollision.core.model.CollisionBox;
 import com.voidvvv.kzcollision.editor.EditorState;
 
+import imgui.ImGui;
+
 public class ViewportInputHandler implements InputProcessor {
     private final EditorState state;
     private final ViewportCamera camera;
-    private float viewportX, viewportY, viewportWidth, viewportHeight;
 
-    // Drag state
-    private boolean panning = false;
-    private boolean draggingBox = false;
-    private boolean draggingOrigin = false;
-    private float dragStartX, dragStartY;
-    private float dragOrigBoxX, dragOrigBoxY;
+    private enum DragMode { NONE, PAN, MOVE_BOX, RESIZE_BOX, ORIGIN }
+
+    enum ResizeCorner { BOTTOM_LEFT, BOTTOM_RIGHT, TOP_LEFT, TOP_RIGHT }
+
+    private DragMode dragMode = DragMode.NONE;
+    private ResizeCorner activeCorner;
+
+    private float dragStartWorldX, dragStartWorldY;
+    private float dragStartCamX, dragStartCamY;
+    private float dragOrigBoxX, dragOrigBoxY, dragOrigBoxW, dragOrigBoxH;
     private float dragOrigOriginX, dragOrigOriginY;
+    private float panStartLocalX, panStartLocalY;
+
+    private float scrollAccumulator;
+
+    private static final float HANDLE_HIT_SCREEN_SIZE = 12f;
+    private static final float MIN_BOX_SIZE = 4f;
 
     public ViewportInputHandler(EditorState state, ViewportCamera camera) {
         this.state = state;
         this.camera = camera;
     }
 
-    public void setViewportBounds(float x, float y, float w, float h) {
-        this.viewportX = x;
-        this.viewportY = y;
-        this.viewportWidth = w;
-        this.viewportHeight = h;
-    }
-
-    private boolean isInViewport(int screenX, int screenY) {
-        // Convert screenY (top-down) to OpenGL coords (bottom-up)
-        int glY = Gdx.graphics.getHeight() - screenY;
-        return screenX >= viewportX && screenX <= viewportX + viewportWidth &&
-               glY >= viewportY && glY <= viewportY + viewportHeight;
-    }
-
-    private float toLocalX(int screenX) {
-        return screenX - viewportX;
-    }
-
-    private float toLocalY(int screenY) {
-        return (Gdx.graphics.getHeight() - screenY) - viewportY;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (!isInViewport(screenX, screenY)) return false;
-
-        float localX = toLocalX(screenX);
-        float localY = toLocalY(screenY);
-
-        if (button == 2) { // Middle click - pan
-            panning = true;
-            dragStartX = localX;
-            dragStartY = localY;
-            return true;
+    public void update() {
+        if (ImGui.getIO().getWantCaptureMouse()) {
+            scrollAccumulator = 0f;
+            return;
         }
 
-        if (button == 0) { // Left click - select/drag
-            AnimationFrame frame = state.getCurrentFrame();
-            if (frame == null) return false;
+        int screenX = Gdx.input.getX();
+        int screenY = Gdx.input.getY();
+        int screenWidth = Gdx.graphics.getWidth();
+        int screenHeight = Gdx.graphics.getHeight();
 
-            // Convert to world coordinates
-            float worldX = camera.screenToWorldX(localX, viewportWidth) + frame.getOriginX();
-            float worldY = camera.screenToWorldY(localY, viewportHeight) + frame.getOriginY();
+        float localX = screenX;
+        float localY = screenHeight - screenY;
 
-            // Check origin hit (small radius)
-            float originDist = (float) Math.sqrt(worldX * worldX + worldY * worldY);
+        // Scroll zoom
+        if (scrollAccumulator != 0f) {
+            camera.zoom(scrollAccumulator, localX, localY, screenWidth, screenHeight);
+            scrollAccumulator = 0f;
+        }
+
+        // Middle-click pan
+        if (Gdx.input.isButtonPressed(2)) {
+            if (dragMode != DragMode.PAN) {
+                dragMode = DragMode.PAN;
+                panStartLocalX = localX;
+                panStartLocalY = localY;
+            } else {
+                camera.pan(localX - panStartLocalX, localY - panStartLocalY);
+                panStartLocalX = localX;
+                panStartLocalY = localY;
+            }
+            return;
+        } else if (dragMode == DragMode.PAN) {
+            dragMode = DragMode.NONE;
+            return;
+        }
+
+        AnimationFrame frame = state.getCurrentFrame();
+        float camX = 0, camY = 0;
+        float worldX = 0, worldY = 0;
+        if (frame != null) {
+            camX = camera.screenToWorldX(localX, screenWidth);
+            camY = camera.screenToWorldY(localY, screenHeight);
+            worldX = camX + frame.getOriginX();
+            worldY = camY + frame.getOriginY();
+        }
+
+        // Left button just pressed
+        if (Gdx.input.isButtonJustPressed(0)) {
+            if (frame == null) return;
+
+            // Check resize handles on selected box
+            String selectedBoxId = state.getSelectedCollisionBoxId();
+            if (selectedBoxId != null) {
+                CollisionBox selectedBox = findBoxById(frame, selectedBoxId);
+                if (selectedBox != null) {
+                    ResizeCorner corner = hitTestHandle(worldX, worldY, selectedBox);
+                    if (corner != null) {
+                        startResize(corner, selectedBox, worldX, worldY);
+                        return;
+                    }
+                }
+            }
+
+            // Check origin marker (in camera space, origin is at 0,0)
+            float originDist = (float) Math.sqrt(camX * camX + camY * camY);
             if (originDist < 10 / camera.getZoom()) {
-                draggingOrigin = true;
+                dragMode = DragMode.ORIGIN;
+                dragStartCamX = camX;
+                dragStartCamY = camY;
                 dragOrigOriginX = frame.getOriginX();
                 dragOrigOriginY = frame.getOriginY();
-                dragStartX = worldX;
-                dragStartY = worldY;
-                return true;
+                return;
             }
 
             // Check collision boxes (reverse order for top-most first)
@@ -84,88 +115,138 @@ public class ViewportInputHandler implements InputProcessor {
                 CollisionBox box = frame.getCollisionBoxes().get(i);
                 if (box.containsPoint(worldX, worldY)) {
                     state.setSelectedCollisionBoxId(box.getId());
-                    draggingBox = true;
+                    dragMode = DragMode.MOVE_BOX;
+                    dragStartWorldX = worldX;
+                    dragStartWorldY = worldY;
                     dragOrigBoxX = box.getX();
                     dragOrigBoxY = box.getY();
-                    dragStartX = worldX;
-                    dragStartY = worldY;
-                    return true;
+                    return;
                 }
             }
 
-            // Clicked empty space - deselect
+            // Empty space - deselect
             state.setSelectedCollisionBoxId(null);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        float localX = toLocalX(screenX);
-        float localY = toLocalY(screenY);
-
-        if (panning) {
-            float dx = localX - dragStartX;
-            float dy = localY - dragStartY;
-            camera.pan(dx, dy);
-            dragStartX = localX;
-            dragStartY = localY;
-            return true;
+            return;
         }
 
-        AnimationFrame frame = state.getCurrentFrame();
-        if (frame == null) return false;
+        // Left button held - dragging
+        if (Gdx.input.isButtonPressed(0) && dragMode != DragMode.NONE) {
+            if (frame == null) { dragMode = DragMode.NONE; return; }
+            float dx = worldX - dragStartWorldX;
+            float dy = worldY - dragStartWorldY;
 
-        float worldX = camera.screenToWorldX(localX, viewportWidth) + frame.getOriginX();
-        float worldY = camera.screenToWorldY(localY, viewportHeight) + frame.getOriginY();
-
-        if (draggingBox) {
-            CollisionBox box = findSelectedBox(frame);
-            if (box != null) {
-                box.setX(dragOrigBoxX + (worldX - dragStartX));
-                box.setY(dragOrigBoxY + (worldY - dragStartY));
+            switch (dragMode) {
+                case MOVE_BOX: {
+                    CollisionBox box = findBoxById(frame, state.getSelectedCollisionBoxId());
+                    if (box != null) {
+                        box.setX(dragOrigBoxX + dx);
+                        box.setY(dragOrigBoxY + dy);
+                    }
+                    break;
+                }
+                case RESIZE_BOX: {
+                    CollisionBox box = findBoxById(frame, state.getSelectedCollisionBoxId());
+                    if (box != null) {
+                        applyResize(box, dx, dy);
+                    }
+                    break;
+                }
+                case ORIGIN: {
+                    float dxCam = camX - dragStartCamX;
+                    float dyCam = camY - dragStartCamY;
+                    frame.setOriginX(dragOrigOriginX + dxCam);
+                    frame.setOriginY(dragOrigOriginY + dyCam);
+                    break;
+                }
+                default: break;
             }
-            return true;
+            return;
         }
 
-        if (draggingOrigin) {
-            frame.setOriginX(dragOrigOriginX + (worldX - dragStartX));
-            frame.setOriginY(dragOrigOriginY + (worldY - dragStartY));
-            return true;
+        // Left button released
+        if (!Gdx.input.isButtonPressed(0) && dragMode != DragMode.NONE) {
+            dragMode = DragMode.NONE;
+        }
+    }
+
+    private void startResize(ResizeCorner corner, CollisionBox box, float worldX, float worldY) {
+        dragMode = DragMode.RESIZE_BOX;
+        activeCorner = corner;
+        dragStartWorldX = worldX;
+        dragStartWorldY = worldY;
+        dragOrigBoxX = box.getX();
+        dragOrigBoxY = box.getY();
+        dragOrigBoxW = box.getWidth();
+        dragOrigBoxH = box.getHeight();
+    }
+
+    private ResizeCorner hitTestHandle(float worldX, float worldY, CollisionBox box) {
+        float hitRadius = HANDLE_HIT_SCREEN_SIZE / camera.getZoom();
+        float[] xs = {box.getX(), box.getX() + box.getWidth(), box.getX(), box.getX() + box.getWidth()};
+        float[] ys = {box.getY(), box.getY(), box.getY() + box.getHeight(), box.getY() + box.getHeight()};
+        ResizeCorner[] corners = {ResizeCorner.BOTTOM_LEFT, ResizeCorner.BOTTOM_RIGHT,
+                                  ResizeCorner.TOP_LEFT, ResizeCorner.TOP_RIGHT};
+        for (int i = 0; i < 4; i++) {
+            if (Math.abs(worldX - xs[i]) <= hitRadius && Math.abs(worldY - ys[i]) <= hitRadius) {
+                return corners[i];
+            }
+        }
+        return null;
+    }
+
+    private void applyResize(CollisionBox box, float dx, float dy) {
+        float newX = dragOrigBoxX;
+        float newY = dragOrigBoxY;
+        float newW = dragOrigBoxW;
+        float newH = dragOrigBoxH;
+
+        switch (activeCorner) {
+            case BOTTOM_LEFT:
+                newX += dx; newW -= dx; newY += dy; newH -= dy; break;
+            case BOTTOM_RIGHT:
+                newW += dx; newY += dy; newH -= dy; break;
+            case TOP_LEFT:
+                newX += dx; newW -= dx; newH += dy; break;
+            case TOP_RIGHT:
+                newW += dx; newH += dy; break;
         }
 
-        return false;
+        if (newW < MIN_BOX_SIZE) {
+            if (activeCorner == ResizeCorner.BOTTOM_LEFT || activeCorner == ResizeCorner.TOP_LEFT) {
+                newX = dragOrigBoxX + dragOrigBoxW - MIN_BOX_SIZE;
+            }
+            newW = MIN_BOX_SIZE;
+        }
+        if (newH < MIN_BOX_SIZE) {
+            if (activeCorner == ResizeCorner.BOTTOM_LEFT || activeCorner == ResizeCorner.BOTTOM_RIGHT) {
+                newY = dragOrigBoxY + dragOrigBoxH - MIN_BOX_SIZE;
+            }
+            newH = MIN_BOX_SIZE;
+        }
+
+        box.setX(newX);
+        box.setY(newY);
+        box.setWidth(newW);
+        box.setHeight(newH);
     }
 
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        panning = false;
-        draggingBox = false;
-        draggingOrigin = false;
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(float amountX, float amountY) {
-        if (!isInViewport(Gdx.input.getX(), Gdx.input.getY())) return false;
-        float localX = toLocalX(Gdx.input.getX());
-        float localY = toLocalY(Gdx.input.getY());
-        camera.zoom(amountY, localX, localY, viewportWidth, viewportHeight);
-        return true;
-    }
-
-    private CollisionBox findSelectedBox(AnimationFrame frame) {
-        String id = state.getSelectedCollisionBoxId();
+    private CollisionBox findBoxById(AnimationFrame frame, String id) {
         if (id == null) return null;
         return frame.getCollisionBoxes().stream()
             .filter(b -> b.getId().equals(id)).findFirst().orElse(null);
     }
 
-    // Unused InputProcessor methods
+    // InputProcessor — only scroll is used; everything else is polled in update()
+    @Override public boolean scrolled(float amountX, float amountY) {
+        scrollAccumulator += amountY;
+        return false;
+    }
     @Override public boolean keyDown(int keycode) { return false; }
     @Override public boolean keyUp(int keycode) { return false; }
     @Override public boolean keyTyped(char character) { return false; }
+    @Override public boolean touchDown(int screenX, int screenY, int pointer, int button) { return false; }
+    @Override public boolean touchUp(int screenX, int screenY, int pointer, int button) { return false; }
+    @Override public boolean touchDragged(int screenX, int screenY, int pointer) { return false; }
     @Override public boolean mouseMoved(int screenX, int screenY) { return false; }
     @Override public boolean touchCancelled(int screenX, int screenY, int pointer, int button) { return false; }
 }

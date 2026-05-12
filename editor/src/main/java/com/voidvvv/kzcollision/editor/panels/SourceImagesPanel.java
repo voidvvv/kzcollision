@@ -7,6 +7,10 @@ import com.voidvvv.kzcollision.core.model.SourceAsset;
 import com.voidvvv.kzcollision.core.model.SourceRegion;
 import com.voidvvv.kzcollision.core.model.SpriteFrame;
 import com.voidvvv.kzcollision.editor.EditorState;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.utils.ObjectSet;
 import imgui.ImGui;
 import imgui.type.ImInt;
 
@@ -31,6 +35,7 @@ public class SourceImagesPanel {
     private String splitRegionId;
     private final ImInt splitRows = new ImInt(2);
     private final ImInt splitCols = new ImInt(2);
+    private boolean splitNeedsOpen;
 
     // Buffer for pending file imports (produced on Swing EDT, consumed on render thread)
     private final List<SourceAsset> pendingImports = new ArrayList<>();
@@ -67,27 +72,37 @@ public class SourceImagesPanel {
 
         for (SourceAsset asset : project.getSourceAssets()) {
             if (asset.getType() == AssetType.ATLAS) {
-                renderAtlasAsset(asset);
+                renderAtlasRegions(asset);
             } else {
                 renderSingleAsset(asset);
             }
         }
     }
 
-    private void renderAtlasAsset(SourceAsset asset) {
-        if (ImGui.collapsingHeader(asset.getFilePath() + " (ATLAS)")) {
-            for (SourceRegion region : asset.getRegions()) {
-                if (ImGui.selectable("  " + region.getName())) {
-                    // Selection handled via context menu
-                }
-                renderRegionContextMenu(region);
+    private String getDisplayName(SourceAsset asset) {
+        String path = asset.getFilePath();
+        int lastSep = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+        return lastSep >= 0 ? path.substring(lastSep + 1) : path;
+    }
+
+    private void renderAtlasRegions(SourceAsset asset) {
+        for (SourceRegion region : asset.getRegions()) {
+            boolean selected = region.getId().equals(stateProvider.getState().getSelectedSourceRegionId());
+            if (ImGui.selectable(region.getName(), selected)) {
+                stateProvider.getState().setSelectedSourceAssetId(asset.getId());
+                stateProvider.getState().setSelectedSourceRegionId(region.getId());
             }
+            renderRegionContextMenu(region);
         }
     }
 
     private void renderSingleAsset(SourceAsset asset) {
-        if (ImGui.selectable(asset.getFilePath())) {
-            // Selection handled via context menu
+        boolean selected = asset.getId().equals(stateProvider.getState().getSelectedSourceAssetId());
+        if (ImGui.selectable(getDisplayName(asset), selected)) {
+            stateProvider.getState().setSelectedSourceAssetId(asset.getId());
+            if (!asset.getRegions().isEmpty()) {
+                stateProvider.getState().setSelectedSourceRegionId(asset.getRegions().get(0).getId());
+            }
         }
         if (!asset.getRegions().isEmpty()) {
             renderRegionContextMenu(asset.getRegions().get(0));
@@ -105,7 +120,7 @@ public class SourceImagesPanel {
                 splitRows.set(2);
                 splitCols.set(2);
                 showSplitPopup = true;
-                ImGui.openPopup("Split##" + region.getId());
+                splitNeedsOpen = true;
             }
             ImGui.endPopup();
         }
@@ -115,17 +130,21 @@ public class SourceImagesPanel {
         SpriteFrame frame = new SpriteFrame();
         frame.setSourceAssetId(region.getAssetId());
         frame.setSourceRegionName(region.getName());
+        frame.setSubRegion(region.getBounds());
         stateProvider.getState().getProject().getSpriteFrames().add(frame);
     }
 
     private void renderSplitPopup() {
         String popupId = "Split##" + splitRegionId;
+        if (splitNeedsOpen) {
+            ImGui.openPopup(popupId);
+            splitNeedsOpen = false;
+        }
         if (ImGui.beginPopupModal(popupId)) {
             ImGui.text("Split region into grid");
             ImGui.inputInt("Rows", splitRows);
             ImGui.inputInt("Cols", splitCols);
 
-            // Clamp to valid range
             int rows = Math.max(1, splitRows.get());
             int cols = Math.max(1, splitCols.get());
 
@@ -151,14 +170,15 @@ public class SourceImagesPanel {
         }
 
         Rect bounds = region.getBounds();
-        // If no bounds are set, we cannot compute sub-regions
         if (bounds == null) {
             return;
         }
 
+        String baseName = region.getName();
         float tileWidth = bounds.width / cols;
         float tileHeight = bounds.height / rows;
-        String baseName = region.getName();
+        int index = 1;
+
 
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
@@ -168,9 +188,11 @@ public class SourceImagesPanel {
 
                 SpriteFrame frame = new SpriteFrame();
                 frame.setSourceAssetId(region.getAssetId());
-                frame.setSourceRegionName(baseName + "_r" + r + "_c" + c);
+                frame.setSourceRegionName(baseName + "_" + String.format("%03d", index));
+
                 frame.setSubRegion(subRegion);
                 stateProvider.getState().getProject().getSpriteFrames().add(frame);
+                index++;
             }
         }
     }
@@ -201,15 +223,22 @@ public class SourceImagesPanel {
             if (result == JFileChooser.APPROVE_OPTION) {
                 List<SourceAsset> imported = new ArrayList<>();
                 for (File file : chooser.getSelectedFiles()) {
+                    String absolutePath = file.getAbsolutePath();
                     String fileName = file.getName();
                     SourceAsset asset;
                     if (fileName.endsWith(".atlas")) {
-                        asset = importAtlasFile(file);
+                        asset = new SourceAsset();
+                        asset.setFilePath(absolutePath);
+                        asset.setAtlasFilePath(absolutePath);
+                        asset.setType(AssetType.ATLAS);
                     } else {
-                        asset = importSingleImage(file);
-                    }
-                    if (asset != null) {
-                        imported.add(asset);
+                        // SINGLE image — store absolute path for loading, name for display
+                        asset = new SourceAsset();
+                        asset.setType(AssetType.SINGLE);
+                        asset.setFilePath(absolutePath);
+                        SourceRegion region = new SourceRegion(fileName, asset.getId(), null);
+                        asset.getRegions().add(region);
+
                     }
                 }
 
@@ -358,8 +387,50 @@ public class SourceImagesPanel {
             pendingImports.clear();
         }
         if (!toAdd.isEmpty()) {
-            Project project = stateProvider.getState().getProject();
-            project.getSourceAssets().addAll(toAdd);
+            EditorState state = stateProvider.getState();
+            Project project = state.getProject();
+            for (SourceAsset asset : toAdd) {
+                project.getSourceAssets().add(asset);
+
+                if (asset.getType() == AssetType.SINGLE) {
+                    try {
+                        Texture tex = new Texture(Gdx.files.absolute(asset.getFilePath()));
+                        state.getTextureCache().put(asset.getFilePath(), tex);
+                        if (!asset.getRegions().isEmpty()) {
+                            SourceRegion region = asset.getRegions().get(0);
+                            region.setBounds(new Rect(0, 0, tex.getWidth(), tex.getHeight()));
+                        }
+                    } catch (Exception e) {
+                        Gdx.app.log("SourceImagesPanel", "Failed to load texture: " + asset.getFilePath(), e);
+                    }
+                } else if (asset.getType() == AssetType.ATLAS) {
+                    String atlasPath = asset.getAtlasFilePath();
+
+                    TextureAtlas atlas;
+                    try {
+                        atlas = new TextureAtlas(Gdx.files.absolute(atlasPath));
+                    } catch (Exception e) {
+                        Gdx.app.log("SourceImagesPanel", "Failed to load atlas: " + atlasPath, e);
+                        project.getSourceAssets().remove(asset);
+                        continue;
+                    }
+
+                    ObjectSet<Texture> atlasTextures = atlas.getTextures();
+                    if (atlasTextures.size > 0) {
+                        state.getTextureCache().put(asset.getFilePath(), atlasTextures.first());
+                    }
+
+                    for (TextureAtlas.AtlasRegion region : atlas.getRegions()) {
+                        String regionName = region.index >= 0
+                                ? region.name + "_" + region.index
+                                : region.name;
+                        Rect bounds = new Rect(region.getRegionX(), region.getRegionY(),
+                                region.getRegionWidth(), region.getRegionHeight());
+                        SourceRegion srcRegion = new SourceRegion(regionName, asset.getId(), bounds);
+                        asset.getRegions().add(srcRegion);
+                    }
+                }
+            }
         }
     }
 }

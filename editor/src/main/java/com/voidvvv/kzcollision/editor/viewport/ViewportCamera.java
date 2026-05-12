@@ -30,7 +30,7 @@ public class ViewportCamera {
     }
 
     public float screenToWorldY(float screenY, float viewportHeight) {
-        return (viewportHeight / 2f - screenY + offsetY) / zoom;
+        return (screenY - viewportHeight / 2f - offsetY) / zoom;
     }
 
     public void reset() {

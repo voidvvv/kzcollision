@@ -36,7 +36,7 @@ public class SpriteFramesPanel {
             String label = buildLabel(frame);
 
             if (ImGui.selectable(label)) {
-                // Single click selects the frame (future use)
+                state.setSelectedSpriteFrameId(frame.getId());
             }
 
             // Double-click: add to current animation
@@ -51,6 +51,9 @@ public class SpriteFramesPanel {
                     addToCurrentAnimation(frame);
                 }
                 if (ImGui.menuItem("Delete")) {
+                    if (frame.getId().equals(state.getSelectedSpriteFrameId())) {
+                        state.setSelectedSpriteFrameId(null);
+                    }
                     frames.remove(frame);
                     removed = true;
                 }
@@ -64,12 +67,7 @@ public class SpriteFramesPanel {
     }
 
     private String buildLabel(SpriteFrame frame) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(frame.getSourceRegionName() != null ? frame.getSourceRegionName() : "(unnamed)");
-        if (frame.getSubRegion() != null) {
-            sb.append(" [split]");
-        }
-        return sb.toString();
+        return frame.getSourceRegionName() != null ? frame.getSourceRegionName() : "(unnamed)";
     }
 
     private void addToCurrentAnimation(SpriteFrame frame) {

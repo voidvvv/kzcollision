@@ -3,4 +3,5 @@ eclipse.project.name = appName + '-core'
 
 dependencies {
   api "com.google.code.gson:gson:$gsonVersion"
+  testImplementation 'junit:junit:4.13.2'
 }
