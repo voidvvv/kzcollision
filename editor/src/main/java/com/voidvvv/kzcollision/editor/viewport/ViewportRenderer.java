@@ -18,6 +18,7 @@ import java.util.Map;
 public class ViewportRenderer {
     private final SpriteBatch batch;
     private final ShapeRenderer shapes;
+    private final OrthographicCamera cam;
     private final ViewportCamera camera;
     private final EditorState state;
 
@@ -25,6 +26,7 @@ public class ViewportRenderer {
         this.state = state;
         this.batch = new SpriteBatch();
         this.shapes = new ShapeRenderer();
+        this.cam = new OrthographicCamera();
         this.camera = new ViewportCamera();
     }
 
@@ -43,8 +45,8 @@ public class ViewportRenderer {
         Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
 
         // Setup camera
-        OrthographicCamera cam = new OrthographicCamera(viewportWidth, viewportHeight);
-        cam.translate(camera.getOffsetX(), camera.getOffsetY());
+        cam.setToOrtho(false, viewportWidth, viewportHeight);
+        cam.position.set(viewportWidth / 2f + camera.getOffsetX(), viewportHeight / 2f + camera.getOffsetY(), 0);
         cam.zoom = 1f / camera.getZoom();
         cam.update();
 

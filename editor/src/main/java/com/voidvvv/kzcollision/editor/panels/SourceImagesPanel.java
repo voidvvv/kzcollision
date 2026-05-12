@@ -10,10 +10,15 @@ import com.voidvvv.kzcollision.editor.EditorState;
 import imgui.ImGui;
 import imgui.type.ImInt;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -153,6 +158,7 @@ public class SourceImagesPanel {
 
         float tileWidth = bounds.width / cols;
         float tileHeight = bounds.height / rows;
+        String baseName = region.getName();
 
         for (int r = 0; r < rows; r++) {
             for (int c = 0; c < cols; c++) {
@@ -162,7 +168,7 @@ public class SourceImagesPanel {
 
                 SpriteFrame frame = new SpriteFrame();
                 frame.setSourceAssetId(region.getAssetId());
-                frame.setSourceRegionName(region.getName());
+                frame.setSourceRegionName(baseName + "_r" + r + "_c" + c);
                 frame.setSubRegion(subRegion);
                 stateProvider.getState().getProject().getSpriteFrames().add(frame);
             }
@@ -198,18 +204,13 @@ public class SourceImagesPanel {
                     String fileName = file.getName();
                     SourceAsset asset;
                     if (fileName.endsWith(".atlas")) {
-                        asset = new SourceAsset();
-                        asset.setFilePath(fileName);
-                        asset.setType(AssetType.ATLAS);
-                        // For now, create one region covering the whole image.
-                        // Full atlas parsing comes in Task 17.
-                        SourceRegion region = new SourceRegion(fileName, asset.getId(), null);
-                        asset.getRegions().add(region);
+                        asset = importAtlasFile(file);
                     } else {
-                        // SINGLE image
-                        asset = new SourceAsset(fileName);
+                        asset = importSingleImage(file);
                     }
-                    imported.add(asset);
+                    if (asset != null) {
+                        imported.add(asset);
+                    }
                 }
 
                 // Thread-safe handoff to render thread
@@ -218,6 +219,136 @@ public class SourceImagesPanel {
                 }
             }
         });
+    }
+
+    /**
+     * Import a single image file. Reads the image dimensions and stores them
+     * as the SourceRegion bounds so that grid split can work correctly.
+     */
+    private SourceAsset importSingleImage(File imageFile) {
+        String fileName = imageFile.getName();
+        SourceAsset asset = new SourceAsset(fileName);
+        // Try to read image dimensions for the region bounds
+        Rect bounds = readImageDimensions(imageFile);
+        if (bounds != null) {
+            SourceRegion region = asset.getRegions().get(0);
+            region.setBounds(bounds);
+        }
+        return asset;
+    }
+
+    /**
+     * Read image dimensions using ImageIO. Returns a Rect with (0, 0, width, height)
+     * or null if the image cannot be read.
+     */
+    private Rect readImageDimensions(File imageFile) {
+        try {
+            BufferedImage img = ImageIO.read(imageFile);
+            if (img != null) {
+                return new Rect(0, 0, img.getWidth(), img.getHeight());
+            }
+        } catch (IOException e) {
+            System.err.println("Failed to read image dimensions: " + imageFile.getAbsolutePath());
+        }
+        return null;
+    }
+
+    /**
+     * Import a .atlas file by parsing its text format and extracting regions.
+     * The .atlas format structure:
+     * - First section: image filename, then atlas metadata (size, format, filter, repeat)
+     * - Subsequent sections: region name, then region metadata (rotate, xy, size, orig, offset, index)
+     */
+    private SourceAsset importAtlasFile(File atlasFile) {
+        String atlasFileName = atlasFile.getName();
+        String imageFileName = null;
+        List<SourceRegion> regions = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(atlasFile))) {
+            String line;
+            boolean inHeader = true;
+            String currentRegionName = null;
+            int regionX = 0;
+            int regionY = 0;
+            int regionW = 0;
+            int regionH = 0;
+
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+
+                if (line.isEmpty()) {
+                    // End of a section — flush the current region if any
+                    if (currentRegionName != null) {
+                        // We'll set assetId below after creating the asset
+                        regions.add(createTempRegion(currentRegionName, regionX, regionY, regionW, regionH));
+                        currentRegionName = null;
+                    }
+                    inHeader = false;
+                    continue;
+                }
+
+                if (inHeader) {
+                    if (imageFileName == null) {
+                        // First non-empty line is the image file name
+                        imageFileName = line;
+                    }
+                    // Skip other header fields (size, format, filter, repeat)
+                } else {
+                    // Region section
+                    if (!line.contains(":")) {
+                        // This is a region name (no colon separator)
+                        currentRegionName = line;
+                    } else if (line.startsWith("xy:")) {
+                        String[] parts = line.substring(3).trim().split(",\\s*");
+                        if (parts.length >= 2) {
+                            regionX = Integer.parseInt(parts[0].trim());
+                            regionY = Integer.parseInt(parts[1].trim());
+                        }
+                    } else if (line.startsWith("size:")) {
+                        String[] parts = line.substring(5).trim().split(",\\s*");
+                        if (parts.length >= 2) {
+                            regionW = Integer.parseInt(parts[0].trim());
+                            regionH = Integer.parseInt(parts[1].trim());
+                        }
+                    }
+                    // Skip rotate, orig, offset, index — not needed for bounds
+                }
+            }
+
+            // Flush the last region if the file doesn't end with an empty line
+            if (currentRegionName != null) {
+                regions.add(createTempRegion(currentRegionName, regionX, regionY, regionW, regionH));
+            }
+        } catch (IOException e) {
+            System.err.println("Failed to parse atlas file: " + atlasFile.getAbsolutePath());
+            return null;
+        }
+
+        // Build the SourceAsset
+        SourceAsset asset = new SourceAsset();
+        asset.setType(AssetType.ATLAS);
+        asset.setFilePath(imageFileName != null ? imageFileName : atlasFileName);
+        asset.setAtlasFilePath(atlasFile.getAbsolutePath());
+
+        // Assign assetId to all parsed regions
+        for (SourceRegion region : regions) {
+            region.setAssetId(asset.getId());
+            asset.getRegions().add(region);
+        }
+
+        if (asset.getRegions().isEmpty()) {
+            System.err.println("Atlas file contained no regions: " + atlasFile.getAbsolutePath());
+        }
+
+        return asset;
+    }
+
+    /**
+     * Temporary region holder used during atlas parsing before the asset ID is known.
+     * The assetId will be set after the SourceAsset is created.
+     */
+    private SourceRegion createTempRegion(String name, int x, int y, int w, int h) {
+        return new SourceRegion(name, null, new Rect(x, y, w, h));
     }
 
     private void processPendingImports() {
