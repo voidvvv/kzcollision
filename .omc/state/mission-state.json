@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-15T14:54:55.056Z",
+  "updatedAt": "2026-05-15T15:21:28.549Z",
   "missions": [
     {
       "id": "session:72a33dcc-ee1b-4cc0-aacc-d2ea9f9bc55d:none",
@@ -179,15 +179,15 @@
       "name": "none",
       "objective": "Session mission",
       "createdAt": "2026-05-15T13:12:16.719Z",
-      "updatedAt": "2026-05-15T14:54:55.056Z",
+      "updatedAt": "2026-05-15T15:21:28.549Z",
       "status": "running",
-      "workerCount": 5,
+      "workerCount": 9,
       "taskCounts": {
-        "total": 5,
+        "total": 9,
         "pending": 0,
         "blocked": 0,
         "inProgress": 1,
-        "completed": 4,
+        "completed": 8,
         "failed": 0
       },
       "agents": [
@@ -235,37 +235,77 @@
           "name": "general-purpose:a32b385",
           "role": "general-purpose",
           "ownership": "a32b385e4293627e1",
+          "status": "done",
+          "currentStep": null,
+          "latestUpdate": "completed",
+          "completedSummary": null,
+          "updatedAt": "2026-05-15T14:56:31.254Z"
+        },
+        {
+          "name": "general-purpose:ae7e8b7",
+          "role": "general-purpose",
+          "ownership": "ae7e8b7f30c6bfe36",
+          "status": "done",
+          "currentStep": null,
+          "latestUpdate": "completed",
+          "completedSummary": null,
+          "updatedAt": "2026-05-15T15:13:59.637Z"
+        },
+        {
+          "name": "general-purpose:a118b00",
+          "role": "general-purpose",
+          "ownership": "a118b005352cf6f99",
+          "status": "done",
+          "currentStep": null,
+          "latestUpdate": "completed",
+          "completedSummary": null,
+          "updatedAt": "2026-05-15T15:19:25.398Z"
+        },
+        {
+          "name": "everything-claude-code:code-reviewer:ade892e",
+          "role": "everything-claude-code:code-reviewer",
+          "ownership": "ade892e442abb70cb",
+          "status": "done",
+          "currentStep": null,
+          "latestUpdate": "completed",
+          "completedSummary": null,
+          "updatedAt": "2026-05-15T15:21:09.372Z"
+        },
+        {
+          "name": "general-purpose:a992a70",
+          "role": "general-purpose",
+          "ownership": "a992a7083cbc2666e",
           "status": "running",
           "currentStep": null,
           "latestUpdate": null,
           "completedSummary": null,
-          "updatedAt": "2026-05-15T14:54:55.056Z"
+          "updatedAt": "2026-05-15T15:21:28.549Z"
         }
       ],
       "timeline": [
         {
-          "id": "session-start:aad8d2c9f7f51d62e:2026-05-15T14:51:31.079Z",
-          "at": "2026-05-15T14:51:31.079Z",
+          "id": "session-start:ade892e442abb70cb:2026-05-15T15:19:37.719Z",
+          "at": "2026-05-15T15:19:37.719Z",
           "kind": "update",
-          "agent": "everything-claude-code:code-reviewer:aad8d2c",
-          "detail": "started everything-claude-code:code-reviewer:aad8d2c",
-          "sourceKey": "session-start:aad8d2c9f7f51d62e"
+          "agent": "everything-claude-code:code-reviewer:ade892e",
+          "detail": "started everything-claude-code:code-reviewer:ade892e",
+          "sourceKey": "session-start:ade892e442abb70cb"
         },
         {
-          "id": "session-stop:aad8d2c9f7f51d62e:2026-05-15T14:54:39.359Z",
-          "at": "2026-05-15T14:54:39.359Z",
+          "id": "session-stop:ade892e442abb70cb:2026-05-15T15:21:09.372Z",
+          "at": "2026-05-15T15:21:09.372Z",
           "kind": "completion",
-          "agent": "everything-claude-code:code-reviewer:aad8d2c",
+          "agent": "everything-claude-code:code-reviewer:ade892e",
           "detail": "completed",
-          "sourceKey": "session-stop:aad8d2c9f7f51d62e"
+          "sourceKey": "session-stop:ade892e442abb70cb"
         },
         {
-          "id": "session-start:a32b385e4293627e1:2026-05-15T14:54:55.056Z",
-          "at": "2026-05-15T14:54:55.056Z",
+          "id": "session-start:a992a7083cbc2666e:2026-05-15T15:21:28.549Z",
+          "at": "2026-05-15T15:21:28.549Z",
           "kind": "update",
-          "agent": "general-purpose:a32b385",
-          "detail": "started general-purpose:a32b385",
-          "sourceKey": "session-start:a32b385e4293627e1"
+          "agent": "general-purpose:a992a70",
+          "detail": "started general-purpose:a992a70",
+          "sourceKey": "session-start:a992a7083cbc2666e"
         }
       ]
     }

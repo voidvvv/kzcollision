@@ -22,7 +22,14 @@
       "Bash(./gradlew :core:test)",
       "Bash(echo \"---EXIT:$?\")",
       "Bash(./gradlew.bat :editor:test --tests \"com.voidvvv.kzcollision.editor.project.CollisionProjectServiceTest\")",
-      "Bash(cmd //c \"gradlew.bat :editor:test --tests \\\\\"com.voidvvv.kzcollision.editor.project.CollisionProjectServiceTest\\\\\" --info\")"
+      "Bash(cmd //c \"gradlew.bat :editor:test --tests \\\\\"com.voidvvv.kzcollision.editor.project.CollisionProjectServiceTest\\\\\" --info\")",
+      "Bash(./gradlew.bat --no-daemon --console=plain :editor:clean :editor:test --tests \"com.voidvvv.kzcollision.editor.project.AssetIndexBuilderTest\")",
+      "Read(//tmp/**)",
+      "Bash(cmd.exe /c \"gradlew.bat --no-daemon --console=plain :editor:compileJava :editor:compileTestJava\")",
+      "Bash(bash gradlew.bat --no-daemon --console=plain :editor:compileJava :editor:compileTestJava)",
+      "Bash(cmd.exe /c \"gradlew.bat :editor:test --tests com.voidvvv.kzcollision.editor.project.AssetIndexBuilderTest\")",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(find:*)"
     ]
   }
 }

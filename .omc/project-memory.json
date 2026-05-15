@@ -180,9 +180,21 @@
   "hotPaths": [
     {
       "path": "",
-      "accessCount": 21,
-      "lastAccessed": 1778856826738,
+      "accessCount": 29,
+      "lastAccessed": 1778858493283,
       "type": "directory"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\AssetIndexBuilder.java",
+      "accessCount": 9,
+      "lastAccessed": 1778858534862,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\AssetRecord.java",
+      "accessCount": 9,
+      "lastAccessed": 1778858534952,
+      "type": "file"
     },
     {
       "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\panels\\PanelManager.java",
@@ -194,6 +206,12 @@
       "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\SourceAsset.java",
       "accessCount": 8,
       "lastAccessed": 1778856820278,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\AssetRegionRecord.java",
+      "accessCount": 7,
+      "lastAccessed": 1778858535012,
       "type": "file"
     },
     {
@@ -215,6 +233,12 @@
       "type": "file"
     },
     {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\AssetIndex.java",
+      "accessCount": 6,
+      "lastAccessed": 1778858534894,
+      "type": "file"
+    },
+    {
       "path": "editor\\src\\test\\java\\com\\voidvvv\\kzcollision\\editor\\project\\CollisionProjectServiceTest.java",
       "accessCount": 5,
       "lastAccessed": 1778856947438,
@@ -227,6 +251,30 @@
       "type": "file"
     },
     {
+      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\AtlasParser.java",
+      "accessCount": 4,
+      "lastAccessed": 1778858395826,
+      "type": "file"
+    },
+    {
+      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\Rect.java",
+      "accessCount": 4,
+      "lastAccessed": 1778858395855,
+      "type": "file"
+    },
+    {
+      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\AssetType.java",
+      "accessCount": 4,
+      "lastAccessed": 1778858395900,
+      "type": "file"
+    },
+    {
+      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\AtlasRegionDescriptor.java",
+      "accessCount": 4,
+      "lastAccessed": 1778858395960,
+      "type": "file"
+    },
+    {
       "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\serialization\\ProjectSerializer.java",
       "accessCount": 3,
       "lastAccessed": 1778856820224,
@@ -236,6 +284,18 @@
       "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\Project.java",
       "accessCount": 3,
       "lastAccessed": 1778856820298,
+      "type": "file"
+    },
+    {
+      "path": "docs\\superpowers\\plans\\2026-05-13-libgdx-project-import.md",
+      "accessCount": 3,
+      "lastAccessed": 1778858404760,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\test\\java\\com\\voidvvv\\kzcollision\\editor\\project\\AssetIndexBuilderTest.java",
+      "accessCount": 3,
+      "lastAccessed": 1778858411064,
       "type": "file"
     },
     {
@@ -257,12 +317,6 @@
       "type": "file"
     },
     {
-      "path": "docs\\superpowers\\plans\\2026-05-13-libgdx-project-import.md",
-      "accessCount": 2,
-      "lastAccessed": 1778856833110,
-      "type": "file"
-    },
-    {
       "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\ImGuiLauncher.java",
       "accessCount": 1,
       "lastAccessed": 1777484374189,
@@ -278,30 +332,6 @@
       "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\panels\\SourceImagePreviewPanel.java",
       "accessCount": 1,
       "lastAccessed": 1778850768836,
-      "type": "file"
-    },
-    {
-      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\AssetType.java",
-      "accessCount": 1,
-      "lastAccessed": 1778850769234,
-      "type": "file"
-    },
-    {
-      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\Rect.java",
-      "accessCount": 1,
-      "lastAccessed": 1778850770049,
-      "type": "file"
-    },
-    {
-      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\AtlasParser.java",
-      "accessCount": 1,
-      "lastAccessed": 1778850770376,
-      "type": "file"
-    },
-    {
-      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\AtlasRegionDescriptor.java",
-      "accessCount": 1,
-      "lastAccessed": 1778850770538,
       "type": "file"
     },
     {
