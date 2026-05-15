@@ -19,7 +19,10 @@
       "Bash(echo \"EXIT CODE: $?\")",
       "Bash(./gradlew build *)",
       "Bash(./gradlew clean *)",
-      "Bash(./gradlew :core:test)"
+      "Bash(./gradlew :core:test)",
+      "Bash(echo \"---EXIT:$?\")",
+      "Bash(./gradlew.bat :editor:test --tests \"com.voidvvv.kzcollision.editor.project.CollisionProjectServiceTest\")",
+      "Bash(cmd //c \"gradlew.bat :editor:test --tests \\\\\"com.voidvvv.kzcollision.editor.project.CollisionProjectServiceTest\\\\\" --info\")"
     ]
   }
 }

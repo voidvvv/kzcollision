@@ -22,6 +22,14 @@ if (JavaVersion.current().isJava9Compatible()) {
   compileJava.options.release.set(11)
 }
 
+sourceSets {
+  test {
+    java {
+      srcDir 'src/test/java'
+    }
+  }
+}
+
 dependencies {
   implementation project(':core')
   implementation project(':sdk')
@@ -37,6 +45,7 @@ dependencies {
   implementation "io.github.spair:imgui-java-natives-windows:$imguiVersion"
   implementation "io.github.spair:imgui-java-natives-linux:$imguiVersion"
   implementation "io.github.spair:imgui-java-natives-macos:$imguiVersion"
+  testImplementation 'junit:junit:4.13.2'
 }
 
 def os = System.properties['os.name'].toLowerCase(Locale.ROOT)

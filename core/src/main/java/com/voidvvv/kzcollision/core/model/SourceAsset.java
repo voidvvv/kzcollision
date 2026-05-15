@@ -8,6 +8,7 @@ public class SourceAsset {
     private String id;
     private AssetType type;
     private String filePath;
+    private String internalPath;
     private String atlasFilePath;
     private List<SourceRegion> regions;
 
@@ -29,6 +30,8 @@ public class SourceAsset {
     public void setType(AssetType type) { this.type = type; }
     public String getFilePath() { return filePath; }
     public void setFilePath(String filePath) { this.filePath = filePath; }
+    public String getInternalPath() { return internalPath; }
+    public void setInternalPath(String internalPath) { this.internalPath = internalPath; }
     public String getAtlasFilePath() { return atlasFilePath; }
     public void setAtlasFilePath(String atlasFilePath) { this.atlasFilePath = atlasFilePath; }
     public List<SourceRegion> getRegions() { return regions; }
