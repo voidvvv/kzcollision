@@ -7,6 +7,12 @@ import com.voidvvv.kzcollision.core.model.SourceAsset;
 import com.voidvvv.kzcollision.core.model.SourceRegion;
 import com.voidvvv.kzcollision.core.model.SpriteFrame;
 import com.voidvvv.kzcollision.editor.EditorState;
+import com.voidvvv.kzcollision.editor.project.AssetIndex;
+import com.voidvvv.kzcollision.editor.project.AssetRecord;
+import com.voidvvv.kzcollision.editor.project.AssetRegionRecord;
+import com.voidvvv.kzcollision.editor.project.EditorProjectContext;
+import com.voidvvv.kzcollision.editor.project.ResourceRecoveryReport;
+import com.voidvvv.kzcollision.editor.project.ResourceStatus;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -48,9 +54,12 @@ public class SourceImagesPanel {
         // Process any assets imported from the Swing file chooser
         processPendingImports();
 
-        if (ImGui.begin("Source Images")) {
+        if (ImGui.begin("Assets")) {
+            renderProjectStatus();
+            ImGui.separator();
             renderImportButton();
             ImGui.separator();
+            ensureProjectHasScannedAssets();
             renderAssetList();
         }
         ImGui.end();
@@ -63,6 +72,24 @@ public class SourceImagesPanel {
     private void renderImportButton() {
         if (ImGui.button("+ Import")) {
             openFileChooser();
+        }
+    }
+
+    private void renderProjectStatus() {
+        EditorState state = stateProvider.getState();
+        EditorProjectContext context = state.getProjectContext();
+        if (context == null) {
+            ImGui.textDisabled("Open a libGDX project or assets folder to scan resources.");
+            return;
+        }
+        ImGui.text("Assets: " + context.getAssetsRoot().getAbsolutePath());
+        ImGui.text("Collision: " + context.getCollisionFile().getAbsolutePath());
+        ResourceRecoveryReport report = state.getRecoveryReport();
+        if (report != null) {
+            ImGui.textDisabled("matched " + report.getMatchedCount()
+                    + " / repaired " + report.getRepairedCount()
+                    + " / missing " + report.getMissingCount()
+                    + " / conflicts " + report.getConflictCount());
         }
     }
 
@@ -79,16 +106,52 @@ public class SourceImagesPanel {
         }
     }
 
+    private void ensureProjectHasScannedAssets() {
+        EditorState state = stateProvider.getState();
+        AssetIndex index = state.getAssetIndex();
+        if (index == null || !state.getProject().getSourceAssets().isEmpty()) {
+            return;
+        }
+        for (AssetRecord record : index.getRecords()) {
+            SourceAsset asset = new SourceAsset();
+            asset.setType(record.getType());
+            asset.setInternalPath(record.getInternalPath());
+            for (AssetRegionRecord region : record.getRegions()) {
+                asset.getRegions().add(new SourceRegion(region.getName(), asset.getId(), region.getBounds()));
+            }
+            state.getProject().getSourceAssets().add(asset);
+        }
+    }
+
     private String getDisplayName(SourceAsset asset) {
-        String path = asset.getFilePath();
+        String path = asset.getInternalPath() != null ? asset.getInternalPath() : asset.getFilePath();
+        if (path == null) return "unknown";
         int lastSep = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
         return lastSep >= 0 ? path.substring(lastSep + 1) : path;
+    }
+
+    private String statusSuffix(SourceAsset asset) {
+        ResourceRecoveryReport report = stateProvider.getState().getRecoveryReport();
+        if (report == null) {
+            return "";
+        }
+        ResourceStatus status = report.getStatus(asset.getId());
+        if (status == ResourceStatus.REPAIRED) {
+            return " [repaired]";
+        }
+        if (status == ResourceStatus.MISSING) {
+            return " [missing]";
+        }
+        if (status == ResourceStatus.CONFLICT) {
+            return " [needs binding]";
+        }
+        return "";
     }
 
     private void renderAtlasRegions(SourceAsset asset) {
         for (SourceRegion region : asset.getRegions()) {
             boolean selected = region.getId().equals(stateProvider.getState().getSelectedSourceRegionId());
-            if (ImGui.selectable(region.getName(), selected)) {
+            if (ImGui.selectable(region.getName() + statusSuffix(asset), selected)) {
                 stateProvider.getState().setSelectedSourceAssetId(asset.getId());
                 stateProvider.getState().setSelectedSourceRegionId(region.getId());
             }
@@ -98,7 +161,7 @@ public class SourceImagesPanel {
 
     private void renderSingleAsset(SourceAsset asset) {
         boolean selected = asset.getId().equals(stateProvider.getState().getSelectedSourceAssetId());
-        if (ImGui.selectable(getDisplayName(asset), selected)) {
+        if (ImGui.selectable(getDisplayName(asset) + statusSuffix(asset), selected)) {
             stateProvider.getState().setSelectedSourceAssetId(asset.getId());
             if (!asset.getRegions().isEmpty()) {
                 stateProvider.getState().setSelectedSourceRegionId(asset.getRegions().get(0).getId());
@@ -231,15 +294,18 @@ public class SourceImagesPanel {
                         asset.setFilePath(absolutePath);
                         asset.setAtlasFilePath(absolutePath);
                         asset.setType(AssetType.ATLAS);
+                        asset.setInternalPath(toInternalPath(file));
                     } else {
                         // SINGLE image — store absolute path for loading, name for display
                         asset = new SourceAsset();
                         asset.setType(AssetType.SINGLE);
                         asset.setFilePath(absolutePath);
+                        asset.setInternalPath(toInternalPath(file));
                         SourceRegion region = new SourceRegion(fileName, asset.getId(), null);
                         asset.getRegions().add(region);
 
                     }
+                    imported.add(asset);
                 }
 
                 // Thread-safe handoff to render thread
@@ -380,6 +446,19 @@ public class SourceImagesPanel {
         return new SourceRegion(name, null, new Rect(x, y, w, h));
     }
 
+    private String toInternalPath(File file) {
+        EditorProjectContext context = stateProvider.getState().getProjectContext();
+        if (context == null) {
+            return file.getAbsolutePath();
+        }
+        try {
+            return context.getAssetsRoot().getCanonicalFile().toPath()
+                    .relativize(file.getCanonicalFile().toPath()).toString().replace('\\', '/');
+        } catch (Exception e) {
+            return file.getAbsolutePath();
+        }
+    }
+
     private void processPendingImports() {
         List<SourceAsset> toAdd;
         synchronized (pendingImports) {
@@ -395,7 +474,8 @@ public class SourceImagesPanel {
                 if (asset.getType() == AssetType.SINGLE) {
                     try {
                         Texture tex = new Texture(Gdx.files.absolute(asset.getFilePath()));
-                        state.getTextureCache().put(asset.getFilePath(), tex);
+                        String cacheKey = asset.getInternalPath() != null ? asset.getInternalPath() : asset.getFilePath();
+                        state.getTextureCache().put(cacheKey, tex);
                         if (!asset.getRegions().isEmpty()) {
                             SourceRegion region = asset.getRegions().get(0);
                             region.setBounds(new Rect(0, 0, tex.getWidth(), tex.getHeight()));
@@ -417,7 +497,8 @@ public class SourceImagesPanel {
 
                     ObjectSet<Texture> atlasTextures = atlas.getTextures();
                     if (atlasTextures.size > 0) {
-                        state.getTextureCache().put(asset.getFilePath(), atlasTextures.first());
+                        String cacheKey = asset.getInternalPath() != null ? asset.getInternalPath() : asset.getFilePath();
+                        state.getTextureCache().put(cacheKey, atlasTextures.first());
                     }
 
                     for (TextureAtlas.AtlasRegion region : atlas.getRegions()) {
