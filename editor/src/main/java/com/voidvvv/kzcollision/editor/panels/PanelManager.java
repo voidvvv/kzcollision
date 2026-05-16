@@ -4,17 +4,15 @@ import imgui.ImGui;
 import imgui.flag.ImGuiCond;
 
 import com.voidvvv.kzcollision.core.model.Project;
-import com.voidvvv.kzcollision.core.model.SourceAsset;
-import com.voidvvv.kzcollision.core.model.SourceRegion;
-import com.voidvvv.kzcollision.core.model.AssetType;
-import com.voidvvv.kzcollision.core.model.Rect;
-import com.voidvvv.kzcollision.core.serialization.ProjectSerializer;
 import com.voidvvv.kzcollision.editor.EditorState;
+import com.voidvvv.kzcollision.editor.project.AssetIndex;
+import com.voidvvv.kzcollision.editor.project.AssetIndexBuilder;
+import com.voidvvv.kzcollision.editor.project.CollisionProjectService;
+import com.voidvvv.kzcollision.editor.project.EditorProjectContext;
+import com.voidvvv.kzcollision.editor.project.EditorTextureLoader;
+import com.voidvvv.kzcollision.editor.project.ResourceRecoveryReport;
+import com.voidvvv.kzcollision.editor.project.ResourceResolver;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.utils.ObjectSet;
-
 
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
@@ -35,8 +33,10 @@ public class PanelManager {
     private final SourceImagePreviewPanel sourceImagePreviewPanel;
     private final SpriteFramePreviewPanel spriteFramePreviewPanel;
 
-    private final ProjectSerializer serializer = new ProjectSerializer();
-    private String currentFilePath;
+    private final CollisionProjectService projectService = new CollisionProjectService();
+    private final AssetIndexBuilder assetIndexBuilder = new AssetIndexBuilder();
+    private final ResourceResolver resourceResolver = new ResourceResolver();
+    private final EditorTextureLoader textureLoader = new EditorTextureLoader();
     private final List<Runnable> pendingFileActions = new ArrayList<>();
 
     public PanelManager(EditorStateProvider stateProvider, FileMenuHandler fileMenuHandler) {
@@ -105,29 +105,29 @@ public class PanelManager {
     private void renderMenuBar() {
         if (ImGui.beginMainMenuBar()) {
             if (ImGui.beginMenu("File")) {
-                if (ImGui.menuItem("New Project")) {
+                if (ImGui.menuItem("New Collision Project")) {
                     EditorState state = stateProvider.getState();
                     state.reset();
-                    currentFilePath = null;
                 }
-                if (ImGui.menuItem("Open Project...")) {
-                    openProjectDialog();
+                if (ImGui.menuItem("Open libGDX Project...")) {
+                    openLibgdxProjectDialog();
+                }
+                if (ImGui.menuItem("Open Assets Folder...")) {
+                    openAssetsFolderDialog();
+                }
+                if (ImGui.menuItem("Open Collision JSON...")) {
+                    openCollisionJsonDialog();
                 }
                 ImGui.separator();
-                if (ImGui.menuItem("Save Project")) {
-                    if (currentFilePath != null) {
-                        saveProject(currentFilePath);
-                    } else {
-                        saveAsDialog();
-                    }
+                if (ImGui.menuItem("Save Collision JSON")) {
+                    saveCurrentCollisionJson();
                 }
-                if (ImGui.menuItem("Save As...")) {
-                    saveAsDialog();
+                if (ImGui.menuItem("Save Collision JSON As...")) {
+                    saveCollisionJsonAsDialog();
                 }
                 ImGui.separator();
                 if (ImGui.menuItem("Export Collision JSON")) {
                     exportCollisionDialog();
-
                 }
                 ImGui.endMenu();
             }
@@ -135,61 +135,111 @@ public class PanelManager {
         }
     }
 
-    private void openProjectDialog() {
+    private void openLibgdxProjectDialog() {
         SwingUtilities.invokeLater(() -> {
             JFileChooser chooser = new JFileChooser();
-            chooser.setFileFilter(new FileNameExtensionFilter("Project Files (*.json)", "json"));
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             int result = chooser.showOpenDialog(null);
             if (result == JFileChooser.APPROVE_OPTION) {
-                File file = chooser.getSelectedFile();
+                File projectRoot = chooser.getSelectedFile();
                 synchronized (pendingFileActions) {
-                    pendingFileActions.add(() -> loadProject(file));
+                    pendingFileActions.add(() -> openProjectRoot(projectRoot));
                 }
-
             }
         });
     }
 
-    private void loadProject(File file) {
-        try {
-            Project project = serializer.load(file);
-            EditorState state = stateProvider.getState();
-            state.reset();
-            state.setProject(project);
-            currentFilePath = file.getAbsolutePath();
-
-            for (SourceAsset asset : project.getSourceAssets()) {
-                if (asset.getFilePath() == null) continue;
-                try {
-                    if (asset.getType() == AssetType.SINGLE) {
-                        Texture tex = new Texture(Gdx.files.absolute(asset.getFilePath()));
-                        state.getTextureCache().put(asset.getFilePath(), tex);
-                        if (!asset.getRegions().isEmpty()) {
-                            SourceRegion region = asset.getRegions().get(0);
-                            if (region.getBounds() == null) {
-                                region.setBounds(new Rect(0, 0, tex.getWidth(), tex.getHeight()));
-                            }
-                        }
-                    } else if (asset.getType() == AssetType.ATLAS && asset.getAtlasFilePath() != null) {
-                        TextureAtlas atlas = new TextureAtlas(Gdx.files.absolute(asset.getAtlasFilePath()));
-                        ObjectSet<Texture> atlasTextures = atlas.getTextures();
-                        if (atlasTextures.size > 0) {
-                            state.getTextureCache().put(asset.getFilePath(), atlasTextures.first());
-                        }
-                    }
-                } catch (Exception e) {
-                    Gdx.app.log("PanelManager", "Failed to load texture: " + asset.getFilePath(), e);
+    private void openAssetsFolderDialog() {
+        SwingUtilities.invokeLater(() -> {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int result = chooser.showOpenDialog(null);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File assetsRoot = chooser.getSelectedFile();
+                synchronized (pendingFileActions) {
+                    pendingFileActions.add(() -> openAssetsFolder(assetsRoot));
                 }
             }
+        });
+    }
+
+    private void openProjectRoot(File projectRoot) {
+        try {
+            openContext(projectService.openProjectRoot(projectRoot));
         } catch (Exception e) {
-            Gdx.app.log("PanelManager", "Failed to load project: " + file.getAbsolutePath(), e);
+            Gdx.app.log("PanelManager", "Failed to open libGDX project: " + projectRoot.getAbsolutePath(), e);
         }
     }
 
-    private void saveAsDialog() {
+    private void openAssetsFolder(File assetsRoot) {
+        try {
+            openContext(projectService.openAssetsFolder(assetsRoot));
+        } catch (Exception e) {
+            Gdx.app.log("PanelManager", "Failed to open assets folder: " + assetsRoot.getAbsolutePath(), e);
+        }
+    }
+
+    private void openContext(EditorProjectContext context) {
+        try {
+            Project project = projectService.loadOrCreate(context.getCollisionFile(), context.getAssetsRoot().getName());
+            AssetIndex index = assetIndexBuilder.build(context.getAssetsRoot());
+            ResourceRecoveryReport report = resourceResolver.resolve(project, index);
+
+            EditorState state = stateProvider.getState();
+            state.reset();
+            state.setProject(project);
+            state.setProjectContext(context);
+            state.setAssetIndex(index);
+            state.setRecoveryReport(report);
+            textureLoader.reload(state);
+        } catch (Exception e) {
+            Gdx.app.log("PanelManager", "Failed to open collision project: "
+                    + context.getAssetsRoot().getAbsolutePath(), e);
+        }
+    }
+
+    private void openCollisionJsonDialog() {
         SwingUtilities.invokeLater(() -> {
             JFileChooser chooser = new JFileChooser();
-            chooser.setFileFilter(new FileNameExtensionFilter("Project Files (*.json)", "json"));
+            chooser.setFileFilter(new FileNameExtensionFilter("Collision JSON (*.json)", "json"));
+            int result = chooser.showOpenDialog(null);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File json = chooser.getSelectedFile();
+                synchronized (pendingFileActions) {
+                    pendingFileActions.add(() -> openCollisionJson(json));
+                }
+            }
+        });
+    }
+
+    private void openCollisionJson(File json) {
+        EditorState state = stateProvider.getState();
+        EditorProjectContext current = state.getProjectContext();
+        if (current == null) {
+            Gdx.app.log("PanelManager", "Open an assets folder before opening a collision JSON file.");
+            return;
+        }
+        openContext(projectService.withCollisionFile(current, json));
+    }
+
+    private void saveCurrentCollisionJson() {
+        EditorState state = stateProvider.getState();
+        EditorProjectContext context = state.getProjectContext();
+        if (context == null) {
+            saveCollisionJsonAsDialog();
+            return;
+        }
+        saveCollisionJson(context.getCollisionFile());
+    }
+
+    private void saveCollisionJsonAsDialog() {
+        SwingUtilities.invokeLater(() -> {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileFilter(new FileNameExtensionFilter("Collision JSON (*.json)", "json"));
+            EditorProjectContext context = stateProvider.getState().getProjectContext();
+            if (context != null) {
+                chooser.setCurrentDirectory(new File(context.getAssetsRoot(), "collision"));
+            }
             int result = chooser.showSaveDialog(null);
             if (result == JFileChooser.APPROVE_OPTION) {
                 File file = chooser.getSelectedFile();
@@ -199,19 +249,23 @@ public class PanelManager {
                 final File saveFile = file;
                 synchronized (pendingFileActions) {
                     pendingFileActions.add(() -> {
-                        saveProject(saveFile.getAbsolutePath());
-                        currentFilePath = saveFile.getAbsolutePath();
+                        saveCollisionJson(saveFile);
+                        EditorProjectContext ctx = stateProvider.getState().getProjectContext();
+                        if (ctx != null) {
+                            stateProvider.getState().setProjectContext(
+                                    projectService.withCollisionFile(ctx, saveFile));
+                        }
                     });
                 }
             }
         });
     }
 
-    private void saveProject(String path) {
+    private void saveCollisionJson(File file) {
         try {
-            serializer.save(stateProvider.getState().getProject(), new File(path));
+            projectService.save(stateProvider.getState().getProject(), file);
         } catch (Exception e) {
-            Gdx.app.log("PanelManager", "Failed to save project: " + path, e);
+            Gdx.app.log("PanelManager", "Failed to save collision JSON: " + file.getAbsolutePath(), e);
         }
     }
 
@@ -233,7 +287,7 @@ public class PanelManager {
                             Project export = new Project(src.getName());
                             export.setAnimations(src.getAnimations());
                             export.setSpriteFrames(src.getSpriteFrames());
-                            serializer.save(export, exportFile);
+                            projectService.save(export, exportFile);
                         } catch (Exception e) {
                             Gdx.app.log("PanelManager", "Failed to export collision JSON: " + exportFile.getAbsolutePath(), e);
                         }
@@ -241,6 +295,5 @@ public class PanelManager {
                 }
             }
         });
-
     }
 }
