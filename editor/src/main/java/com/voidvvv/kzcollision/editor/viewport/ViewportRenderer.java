@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.voidvvv.kzcollision.core.model.AnimationFrame;
-import com.voidvvv.kzcollision.core.model.AssetType;
+
 import com.voidvvv.kzcollision.core.model.CollisionBox;
 import com.voidvvv.kzcollision.core.model.Rect;
 import com.voidvvv.kzcollision.core.model.SourceAsset;
@@ -138,18 +138,10 @@ public class ViewportRenderer {
     private Texture getTexture(String sourceAssetId) {
         Map<String, Texture> cache = state.getTextureCache();
         SourceAsset asset = state.getProject().findSourceAsset(sourceAssetId);
-        if (asset == null) return null;
-        String key = asset.getFilePath();
-        Texture tex = cache.get(key);
-        if (tex == null && asset.getType() == AssetType.SINGLE) {
-            try {
-                tex = new Texture(Gdx.files.absolute(key));
-                cache.put(key, tex);
-            } catch (Exception e) {
-                return null;
-            }
+        if (asset == null || asset.getInternalPath() == null) {
+            return null;
         }
-        return tex;
+        return cache.get(asset.getInternalPath());
     }
 
     public void dispose() {

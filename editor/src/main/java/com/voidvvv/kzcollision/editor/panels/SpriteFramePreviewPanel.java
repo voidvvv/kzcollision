@@ -28,7 +28,9 @@ public class SpriteFramePreviewPanel {
                 } else {
                     Texture tex = resolveTexture(state, frame);
                     if (tex == null) {
-                        ImGui.textDisabled("Texture not loaded");
+                        SourceAsset srcAsset = state.getProject().findSourceAsset(frame.getSourceAssetId());
+                        String path = (srcAsset != null && srcAsset.getInternalPath() != null) ? srcAsset.getInternalPath() : "unknown";
+                        ImGui.textDisabled("Texture not loaded for: " + path);
                     } else {
                         renderPreview(tex, frame);
                         renderInfo(frame, tex);
@@ -42,7 +44,8 @@ public class SpriteFramePreviewPanel {
     private Texture resolveTexture(EditorState state, SpriteFrame frame) {
         SourceAsset asset = state.getProject().findSourceAsset(frame.getSourceAssetId());
         if (asset == null) return null;
-        return state.getTextureCache().get(asset.getFilePath());
+        String cacheKey = asset.getInternalPath() != null ? asset.getInternalPath() : asset.getFilePath();
+        return state.getTextureCache().get(cacheKey);
     }
 
     private void renderPreview(Texture tex, SpriteFrame frame) {

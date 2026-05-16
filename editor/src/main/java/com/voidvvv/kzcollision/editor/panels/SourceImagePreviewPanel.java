@@ -26,9 +26,11 @@ public class SourceImagePreviewPanel {
                 if (asset == null) {
                     ImGui.textDisabled("Source image not found");
                 } else {
-                    Texture tex = state.getTextureCache().get(asset.getFilePath());
+                    String cacheKey = asset.getInternalPath() != null ? asset.getInternalPath() : asset.getFilePath();
+                    Texture tex = state.getTextureCache().get(cacheKey);
                     if (tex == null) {
-                        ImGui.textDisabled("Texture not loaded");
+                        String path = asset.getInternalPath() != null ? asset.getInternalPath() : asset.getFilePath();
+                        ImGui.textDisabled("Texture not loaded: " + path);
                     } else {
                         SourceRegion region = findSelectedRegion(asset, state.getSelectedSourceRegionId());
                         renderPreview(tex, region);
@@ -95,7 +97,7 @@ public class SourceImagePreviewPanel {
         if (region != null && region.getName() != null) {
             ImGui.text(region.getName());
         } else {
-            String displayName = asset.getFilePath();
+            String displayName = asset.getInternalPath() != null ? asset.getInternalPath() : asset.getFilePath();
             int lastSep = Math.max(displayName.lastIndexOf('/'), displayName.lastIndexOf('\\'));
             if (lastSep >= 0) {
                 displayName = displayName.substring(lastSep + 1);
