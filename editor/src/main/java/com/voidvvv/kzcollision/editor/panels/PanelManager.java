@@ -4,9 +4,13 @@ import imgui.ImGui;
 import imgui.flag.ImGuiCond;
 
 import com.voidvvv.kzcollision.core.model.Project;
+import com.voidvvv.kzcollision.core.model.SourceAsset;
+import com.voidvvv.kzcollision.core.model.SourceRegion;
 import com.voidvvv.kzcollision.editor.EditorState;
 import com.voidvvv.kzcollision.editor.project.AssetIndex;
 import com.voidvvv.kzcollision.editor.project.AssetIndexBuilder;
+import com.voidvvv.kzcollision.editor.project.AssetRecord;
+import com.voidvvv.kzcollision.editor.project.AssetRegionRecord;
 import com.voidvvv.kzcollision.editor.project.CollisionProjectService;
 import com.voidvvv.kzcollision.editor.project.EditorProjectContext;
 import com.voidvvv.kzcollision.editor.project.EditorTextureLoader;
@@ -184,6 +188,19 @@ public class PanelManager {
             Project project = projectService.loadOrCreate(context.getCollisionFile(), context.getAssetsRoot().getName());
             AssetIndex index = assetIndexBuilder.build(context.getAssetsRoot());
             ResourceRecoveryReport report = resourceResolver.resolve(project, index);
+
+            // Populate project assets from index when no collision JSON exists yet
+            if (project.getSourceAssets().isEmpty()) {
+                for (AssetRecord record : index.getRecords()) {
+                    SourceAsset asset = new SourceAsset();
+                    asset.setType(record.getType());
+                    asset.setInternalPath(record.getInternalPath());
+                    for (AssetRegionRecord region : record.getRegions()) {
+                        asset.getRegions().add(new SourceRegion(region.getName(), asset.getId(), region.getBounds()));
+                    }
+                    project.getSourceAssets().add(asset);
+                }
+            }
 
             EditorState state = stateProvider.getState();
             state.reset();
