@@ -3,6 +3,9 @@ package com.voidvvv.kzcollision.editor;
 import com.voidvvv.kzcollision.core.model.Animation;
 import com.voidvvv.kzcollision.core.model.AnimationFrame;
 import com.voidvvv.kzcollision.core.model.Project;
+import com.voidvvv.kzcollision.editor.project.AssetIndex;
+import com.voidvvv.kzcollision.editor.project.EditorProjectContext;
+import com.voidvvv.kzcollision.editor.project.ResourceRecoveryReport;
 
 import com.badlogic.gdx.graphics.Texture;
 
@@ -20,6 +23,9 @@ public class EditorState {
     private String selectedSourceAssetId;
     private String selectedSourceRegionId;
     private transient Map<String, Texture> textureCache = new HashMap<>();
+    private EditorProjectContext projectContext;
+    private AssetIndex assetIndex;
+    private ResourceRecoveryReport recoveryReport;
 
     public EditorState() {
         this.project = new Project("Untitled");
@@ -57,6 +63,12 @@ public class EditorState {
     }
 
     public Map<String, Texture> getTextureCache() { return textureCache; }
+    public EditorProjectContext getProjectContext() { return projectContext; }
+    public void setProjectContext(EditorProjectContext projectContext) { this.projectContext = projectContext; }
+    public AssetIndex getAssetIndex() { return assetIndex; }
+    public void setAssetIndex(AssetIndex assetIndex) { this.assetIndex = assetIndex; }
+    public ResourceRecoveryReport getRecoveryReport() { return recoveryReport; }
+    public void setRecoveryReport(ResourceRecoveryReport recoveryReport) { this.recoveryReport = recoveryReport; }
 
     public void reset() {
         this.project = new Project("Untitled");
@@ -72,5 +84,8 @@ public class EditorState {
             tex.dispose();
         }
         textureCache.clear();
+        this.projectContext = null;
+        this.assetIndex = null;
+        this.recoveryReport = null;
     }
 }
