@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1778850195615,
+  "lastScanned": 1779526467504,
   "projectRoot": "C:\\myFiles\\dev\\project\\kzcollision\\kzcollision",
   "techStack": {
     "languages": [
@@ -48,7 +48,7 @@
       "path": "assets",
       "purpose": "Static assets",
       "fileCount": 3,
-      "lastAccessed": 1778850195599,
+      "lastAccessed": 1779526467487,
       "keyFiles": [
         "assets.txt",
         "hs_err_pid16404.log",
@@ -59,14 +59,14 @@
       "path": "build",
       "purpose": "Build output",
       "fileCount": 0,
-      "lastAccessed": 1778850195599,
+      "lastAccessed": 1779526467487,
       "keyFiles": []
     },
     "core": {
       "path": "core",
       "purpose": null,
       "fileCount": 1,
-      "lastAccessed": 1778850195599,
+      "lastAccessed": 1779526467488,
       "keyFiles": [
         "build.gradle"
       ]
@@ -75,7 +75,7 @@
       "path": "demo",
       "purpose": null,
       "fileCount": 3,
-      "lastAccessed": 1778850195600,
+      "lastAccessed": 1779526467488,
       "keyFiles": [
         "aaaa.json",
         "test_atlas.json",
@@ -85,24 +85,25 @@
     "docs": {
       "path": "docs",
       "purpose": "Documentation",
-      "fileCount": 1,
-      "lastAccessed": 1778850195600,
+      "fileCount": 2,
+      "lastAccessed": 1779526467488,
       "keyFiles": [
-        "sdk-analysis.md"
+        "sdk-analysis.md",
+        "sdk-usage-guide.md"
       ]
     },
     "edit2d": {
       "path": "edit2d",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1778850195600,
+      "lastAccessed": 1779526467489,
       "keyFiles": []
     },
     "editor": {
       "path": "editor",
       "purpose": null,
       "fileCount": 1,
-      "lastAccessed": 1778850195600,
+      "lastAccessed": 1779526467489,
       "keyFiles": [
         "build.gradle"
       ]
@@ -111,7 +112,7 @@
       "path": "gradle",
       "purpose": null,
       "fileCount": 1,
-      "lastAccessed": 1778850195601,
+      "lastAccessed": 1779526467490,
       "keyFiles": [
         "gradle-daemon-jvm.properties"
       ]
@@ -120,7 +121,7 @@
       "path": "sdk",
       "purpose": null,
       "fileCount": 1,
-      "lastAccessed": 1778850195601,
+      "lastAccessed": 1779526467490,
       "keyFiles": [
         "build.gradle"
       ]
@@ -129,7 +130,7 @@
       "path": "todo",
       "purpose": null,
       "fileCount": 1,
-      "lastAccessed": 1778850195601,
+      "lastAccessed": 1779526467490,
       "keyFiles": [
         "rect_move.md"
       ]
@@ -138,104 +139,188 @@
       "path": "core\\build",
       "purpose": "Build output",
       "fileCount": 0,
-      "lastAccessed": 1778850195602,
+      "lastAccessed": 1779526467491,
       "keyFiles": []
     },
     "core\\src": {
       "path": "core\\src",
       "purpose": "Source code",
       "fileCount": 0,
-      "lastAccessed": 1778850195602,
+      "lastAccessed": 1779526467491,
       "keyFiles": []
     },
     "editor\\build": {
       "path": "editor\\build",
       "purpose": "Build output",
       "fileCount": 0,
-      "lastAccessed": 1778850195603,
+      "lastAccessed": 1779526467492,
       "keyFiles": []
     },
     "editor\\src": {
       "path": "editor\\src",
       "purpose": "Source code",
       "fileCount": 0,
-      "lastAccessed": 1778850195603,
+      "lastAccessed": 1779526467492,
       "keyFiles": []
     },
     "sdk\\build": {
       "path": "sdk\\build",
       "purpose": "Build output",
       "fileCount": 0,
-      "lastAccessed": 1778850195604,
+      "lastAccessed": 1779526467493,
       "keyFiles": []
     },
     "sdk\\src": {
       "path": "sdk\\src",
       "purpose": "Source code",
       "fileCount": 0,
-      "lastAccessed": 1778850195604,
+      "lastAccessed": 1779526467493,
       "keyFiles": []
     }
   },
   "hotPaths": [
     {
       "path": "",
-      "accessCount": 29,
-      "lastAccessed": 1778858493283,
+      "accessCount": 38,
+      "lastAccessed": 1778924662049,
       "type": "directory"
     },
     {
-      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\AssetIndexBuilder.java",
-      "accessCount": 9,
-      "lastAccessed": 1778858534862,
-      "type": "file"
-    },
-    {
-      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\AssetRecord.java",
-      "accessCount": 9,
-      "lastAccessed": 1778858534952,
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\panels\\SourceImagesPanel.java",
+      "accessCount": 27,
+      "lastAccessed": 1778916078403,
       "type": "file"
     },
     {
       "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\panels\\PanelManager.java",
-      "accessCount": 8,
-      "lastAccessed": 1778850915986,
+      "accessCount": 20,
+      "lastAccessed": 1778924252316,
       "type": "file"
     },
     {
       "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\SourceAsset.java",
-      "accessCount": 8,
-      "lastAccessed": 1778856820278,
+      "accessCount": 15,
+      "lastAccessed": 1778930574146,
       "type": "file"
     },
     {
-      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\AssetRegionRecord.java",
-      "accessCount": 7,
-      "lastAccessed": 1778858535012,
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\EditorState.java",
+      "accessCount": 14,
+      "lastAccessed": 1778934857508,
       "type": "file"
     },
     {
-      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\panels\\SourceImagesPanel.java",
-      "accessCount": 6,
-      "lastAccessed": 1778850916177,
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\AssetRecord.java",
+      "accessCount": 13,
+      "lastAccessed": 1778915260786,
       "type": "file"
     },
     {
-      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\CollisionProjectService.java",
-      "accessCount": 6,
-      "lastAccessed": 1778856947463,
-      "type": "file"
-    },
-    {
-      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\EditorProjectContext.java",
-      "accessCount": 6,
-      "lastAccessed": 1778856947499,
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\AssetIndexBuilder.java",
+      "accessCount": 12,
+      "lastAccessed": 1778913997803,
       "type": "file"
     },
     {
       "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\AssetIndex.java",
+      "accessCount": 11,
+      "lastAccessed": 1778915260631,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\AssetRegionRecord.java",
+      "accessCount": 11,
+      "lastAccessed": 1778915282097,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\viewport\\ViewportRenderer.java",
+      "accessCount": 11,
+      "lastAccessed": 1778934843922,
+      "type": "file"
+    },
+    {
+      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\Rect.java",
+      "accessCount": 10,
+      "lastAccessed": 1778934857275,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\ResourceResolver.java",
+      "accessCount": 9,
+      "lastAccessed": 1778913997862,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\EditorProjectContext.java",
+      "accessCount": 9,
+      "lastAccessed": 1778915017829,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\ResourceRecoveryReport.java",
+      "accessCount": 9,
+      "lastAccessed": 1778915260717,
+      "type": "file"
+    },
+    {
+      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\Project.java",
+      "accessCount": 9,
+      "lastAccessed": 1778930569337,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\CollisionProjectService.java",
+      "accessCount": 8,
+      "lastAccessed": 1778914936173,
+      "type": "file"
+    },
+    {
+      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\AssetType.java",
+      "accessCount": 8,
+      "lastAccessed": 1778924676830,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\panels\\SourceImagePreviewPanel.java",
+      "accessCount": 7,
+      "lastAccessed": 1778934857388,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\panels\\SpriteFramePreviewPanel.java",
+      "accessCount": 7,
+      "lastAccessed": 1778934857541,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\test\\java\\com\\voidvvv\\kzcollision\\editor\\project\\ResourceResolverTest.java",
       "accessCount": 6,
-      "lastAccessed": 1778858534894,
+      "lastAccessed": 1778860300387,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\test\\java\\com\\voidvvv\\kzcollision\\editor\\project\\AssetIndexBuilderTest.java",
+      "accessCount": 6,
+      "lastAccessed": 1778860679564,
+      "type": "file"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\EditorTextureLoader.java",
+      "accessCount": 6,
+      "lastAccessed": 1778916070674,
+      "type": "file"
+    },
+    {
+      "path": "sdk\\src\\main\\java\\com\\voidvvv\\kzcollision\\sdk\\CollisionBox.java",
+      "accessCount": 6,
+      "lastAccessed": 1778934843651,
+      "type": "file"
+    },
+    {
+      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\AnimationFrame.java",
+      "accessCount": 6,
+      "lastAccessed": 1778934857333,
       "type": "file"
     },
     {
@@ -245,9 +330,45 @@
       "type": "file"
     },
     {
-      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\viewport\\ViewportRenderer.java",
-      "accessCount": 4,
-      "lastAccessed": 1778850916239,
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project\\ResourceStatus.java",
+      "accessCount": 5,
+      "lastAccessed": 1778915260654,
+      "type": "file"
+    },
+    {
+      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\SourceRegion.java",
+      "accessCount": 5,
+      "lastAccessed": 1778924252430,
+      "type": "file"
+    },
+    {
+      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\AtlasRegionDescriptor.java",
+      "accessCount": 5,
+      "lastAccessed": 1778924252520,
+      "type": "file"
+    },
+    {
+      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\serialization\\ProjectSerializer.java",
+      "accessCount": 5,
+      "lastAccessed": 1778930561921,
+      "type": "file"
+    },
+    {
+      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\Animation.java",
+      "accessCount": 5,
+      "lastAccessed": 1778930569369,
+      "type": "file"
+    },
+    {
+      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\CollisionBox.java",
+      "accessCount": 5,
+      "lastAccessed": 1778934843681,
+      "type": "file"
+    },
+    {
+      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\SpriteFrame.java",
+      "accessCount": 5,
+      "lastAccessed": 1778934857441,
       "type": "file"
     },
     {
@@ -257,33 +378,15 @@
       "type": "file"
     },
     {
-      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\Rect.java",
+      "path": "sdk\\src\\main\\java\\com\\voidvvv\\kzcollision\\sdk\\KZCollisionLoader.java",
       "accessCount": 4,
-      "lastAccessed": 1778858395855,
+      "lastAccessed": 1778930556703,
       "type": "file"
     },
     {
-      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\AssetType.java",
+      "path": "sdk\\src\\main\\java\\com\\voidvvv\\kzcollision\\sdk\\CollisionQuery.java",
       "accessCount": 4,
-      "lastAccessed": 1778858395900,
-      "type": "file"
-    },
-    {
-      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\AtlasRegionDescriptor.java",
-      "accessCount": 4,
-      "lastAccessed": 1778858395960,
-      "type": "file"
-    },
-    {
-      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\serialization\\ProjectSerializer.java",
-      "accessCount": 3,
-      "lastAccessed": 1778856820224,
-      "type": "file"
-    },
-    {
-      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\Project.java",
-      "accessCount": 3,
-      "lastAccessed": 1778856820298,
+      "lastAccessed": 1778934843807,
       "type": "file"
     },
     {
@@ -293,69 +396,69 @@
       "type": "file"
     },
     {
-      "path": "editor\\src\\test\\java\\com\\voidvvv\\kzcollision\\editor\\project\\AssetIndexBuilderTest.java",
+      "path": "editor\\src\\test\\java\\com\\voidvvv\\kzcollision\\editor\\EditorStateProjectContextTest.java",
       "accessCount": 3,
-      "lastAccessed": 1778858411064,
+      "lastAccessed": 1778913515157,
       "type": "file"
+    },
+    {
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\project",
+      "accessCount": 3,
+      "lastAccessed": 1778915255136,
+      "type": "directory"
     },
     {
       "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\KZCollisionEditor.java",
-      "accessCount": 2,
-      "lastAccessed": 1778598176186,
+      "accessCount": 3,
+      "lastAccessed": 1778924252401,
       "type": "file"
     },
     {
-      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\SourceRegion.java",
-      "accessCount": 2,
-      "lastAccessed": 1778850916044,
+      "path": "sdk\\src\\test\\java\\com\\voidvvv\\kzcollision\\sdk\\KZCollisionLoaderTest.java",
+      "accessCount": 3,
+      "lastAccessed": 1778928971811,
       "type": "file"
     },
     {
-      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\EditorState.java",
-      "accessCount": 2,
-      "lastAccessed": 1778850916137,
+      "path": "sdk\\src\\test\\java\\com\\voidvvv\\kzcollision\\sdk\\CollisionQueryTest.java",
+      "accessCount": 3,
+      "lastAccessed": 1778928971866,
       "type": "file"
+    },
+    {
+      "path": "sdk\\src\\main\\java\\com\\voidvvv\\kzcollision\\sdk\\KZCollisionData.java",
+      "accessCount": 3,
+      "lastAccessed": 1778930556890,
+      "type": "file"
+    },
+    {
+      "path": "sdk\\src\\main\\java\\com\\voidvvv\\kzcollision\\sdk\\AnimationCollisionData.java",
+      "accessCount": 3,
+      "lastAccessed": 1778930561937,
+      "type": "file"
+    },
+    {
+      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\serialization\\ProjectGsonFactory.java",
+      "accessCount": 2,
+      "lastAccessed": 1778924241844,
+      "type": "file"
+    },
+    {
+      "path": "demo\\test_atlas.json",
+      "accessCount": 2,
+      "lastAccessed": 1778924349013,
+      "type": "file"
+    },
+    {
+      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model",
+      "accessCount": 2,
+      "lastAccessed": 1778924667135,
+      "type": "directory"
     },
     {
       "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\ImGuiLauncher.java",
       "accessCount": 1,
       "lastAccessed": 1777484374189,
-      "type": "file"
-    },
-    {
-      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\panels\\SpriteFramePreviewPanel.java",
-      "accessCount": 1,
-      "lastAccessed": 1778850768755,
-      "type": "file"
-    },
-    {
-      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\panels\\SourceImagePreviewPanel.java",
-      "accessCount": 1,
-      "lastAccessed": 1778850768836,
-      "type": "file"
-    },
-    {
-      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\serialization\\ProjectGsonFactory.java",
-      "accessCount": 1,
-      "lastAccessed": 1778850856170,
-      "type": "file"
-    },
-    {
-      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\Animation.java",
-      "accessCount": 1,
-      "lastAccessed": 1778850856215,
-      "type": "file"
-    },
-    {
-      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\SpriteFrame.java",
-      "accessCount": 1,
-      "lastAccessed": 1778850856252,
-      "type": "file"
-    },
-    {
-      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\AnimationFrame.java",
-      "accessCount": 1,
-      "lastAccessed": 1778850856329,
       "type": "file"
     },
     {
@@ -365,16 +468,16 @@
       "type": "file"
     },
     {
-      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model\\CollisionBox.java",
+      "path": "editor\\src\\main\\java\\com\\voidvvv\\kzcollision\\editor\\panels\\FileMenuHandler.java",
       "accessCount": 1,
-      "lastAccessed": 1778850856410,
+      "lastAccessed": 1778924241532,
       "type": "file"
     },
     {
-      "path": "core\\src\\main\\java\\com\\voidvvv\\kzcollision\\core\\model",
+      "path": "demo\\aaaa.json",
       "accessCount": 1,
-      "lastAccessed": 1778856833132,
-      "type": "directory"
+      "lastAccessed": 1778924242207,
+      "type": "file"
     }
   ],
   "userDirectives": []

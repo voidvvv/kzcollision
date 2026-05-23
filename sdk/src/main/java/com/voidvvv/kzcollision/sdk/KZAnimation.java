@@ -97,4 +97,6 @@ public class KZAnimation {
     public float getOriginX(int frameIndex) { return originXs[frameIndex]; }
     public float getOriginY(int frameIndex) { return originYs[frameIndex]; }
     public List<CollisionBox> getCollisionBoxes(int frameIndex) { return frameCollisionBoxes.get(frameIndex); }
+    public float getRegionWidth(int frameIndex) { return regions[frameIndex].getRegionWidth(); }
+    public float getRegionHeight(int frameIndex) { return regions[frameIndex].getRegionHeight(); }
 }
