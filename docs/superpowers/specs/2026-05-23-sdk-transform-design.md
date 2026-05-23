@@ -75,6 +75,13 @@ The transform order is:
 
 For rendering, `KZDrawInfo` will expose the same effective scale values so `KZDrawInfo.draw(batch)` and `computeWorldCollisionBoxes()` agree.
 
+`KZDrawInfo.x` and `KZDrawInfo.y` represent the world-space position of the animation origin. Because libGDX's `SpriteBatch.draw(...)` expects a bottom-left draw position plus an origin relative to that bottom-left point, `KZDrawInfo` will also expose `drawX` and `drawY`:
+
+```java
+drawX = x - originX
+drawY = y - originY
+```
+
 ## Collision Box Calculation
 
 `computeWorldCollisionBoxes()` should transform all four corners of each local collision box:
@@ -103,7 +110,8 @@ This algorithm handles positive scale, negative scale, explicit flips, and rotat
 `computeDrawInfo()` should return:
 
 - `region`: current frame texture region.
-- `x`, `y`: player position.
+- `x`, `y`: player position, meaning the world-space position of the frame origin.
+- `drawX`, `drawY`: bottom-left draw position to pass to `SpriteBatch`.
 - `originX`, `originY`: current frame origin.
 - `width`, `height`: current region dimensions.
 - `scaleX`, `scaleY`: effective scale values.
@@ -112,7 +120,7 @@ This algorithm handles positive scale, negative scale, explicit flips, and rotat
 `KZDrawInfo.draw(SpriteBatch batch)` can continue using libGDX's full draw overload:
 
 ```java
-batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
+batch.draw(region, drawX, drawY, originX, originY, width, height, scaleX, scaleY, rotation);
 ```
 
 The design assumes libGDX negative scale behavior is acceptable and intentional for mirroring around the origin.
@@ -177,4 +185,3 @@ World collision tests:
 - `computeWorldCollisionBoxes()` returns correct world-space AABBs after flip, scale, and rotation.
 - Existing public API remains source-compatible.
 - SDK tests cover explicit flip, negative scale, flip cancellation, collision coordinates, and collision sizes.
-

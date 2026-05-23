@@ -114,8 +114,8 @@ public class KZAnimationPlayer {
      * </pre>
      */
     public KZDrawInfo computeDrawInfo() {
-        float effectiveSX = flipX ? -scaleX : scaleX;
-        float effectiveSY = flipY ? -scaleY : scaleY;
+        float effectiveSX = effectiveScaleX();
+        float effectiveSY = effectiveScaleY();
         float ox = animation.getOriginX(currentFrame);
         float oy = animation.getOriginY(currentFrame);
         TextureRegion region = animation.getRegion(currentFrame);
@@ -139,68 +139,60 @@ public class KZAnimationPlayer {
      * Returns collision boxes transformed to world coordinates, accounting for
      * position, scale, flip, and rotation.
      *
-     * <p>When rotation is non-zero, each box's four corners are rotated and
-     * the enclosing axis-aligned bounding box (AABB) is returned. This
-     * produces a conservative approximation that is compatible with
+     * <p>Each box's four corners are transformed and the enclosing
+     * axis-aligned bounding box (AABB) is returned. This produces a
+     * conservative approximation for rotation that is compatible with
      * {@link CollisionQuery#overlaps(List, List)}.
      */
     public List<CollisionBox> computeWorldCollisionBoxes() {
-        float effectiveSX = flipX ? -scaleX : scaleX;
-        float effectiveSY = flipY ? -scaleY : scaleY;
+        float effectiveSX = effectiveScaleX();
+        float effectiveSY = effectiveScaleY();
         float ox = animation.getOriginX(currentFrame);
         float oy = animation.getOriginY(currentFrame);
         List<CollisionBox> localBoxes = animation.getCollisionBoxes(currentFrame);
 
         List<CollisionBox> result = new ArrayList<>(localBoxes.size());
+        float rad = (float) Math.toRadians(rotation);
+        float cos = (float) Math.cos(rad);
+        float sin = (float) Math.sin(rad);
 
-        if (rotation == 0f) {
-            for (CollisionBox box : localBoxes) {
-                float lx1 = (box.getX() - ox) * effectiveSX;
-                float ly1 = (box.getY() - oy) * effectiveSY;
-                float lx2 = (box.getX() + box.getWidth() - ox) * effectiveSX;
-                float ly2 = (box.getY() + box.getHeight() - oy) * effectiveSY;
+        for (CollisionBox box : localBoxes) {
+            float[] localXs = {
+                (box.getX() - ox) * effectiveSX,
+                (box.getX() + box.getWidth() - ox) * effectiveSX
+            };
+            float[] localYs = {
+                (box.getY() - oy) * effectiveSY,
+                (box.getY() + box.getHeight() - oy) * effectiveSY
+            };
 
-                float wx = Math.min(x + lx1, x + lx2);
-                float wy = Math.min(y + ly1, y + ly2);
-                float ww = Math.abs(lx2 - lx1);
-                float wh = Math.abs(ly2 - ly1);
+            float minX = Float.MAX_VALUE;
+            float minY = Float.MAX_VALUE;
+            float maxX = -Float.MAX_VALUE;
+            float maxY = -Float.MAX_VALUE;
 
-                result.add(new CollisionBox(wx, wy, ww, wh, box.getLabel()));
-            }
-        } else {
-            float rad = (float) Math.toRadians(rotation);
-            float cos = (float) Math.cos(rad);
-            float sin = (float) Math.sin(rad);
-
-            for (CollisionBox box : localBoxes) {
-                // Four corners relative to origin, then scaled
-                float[] localXs = {
-                    (box.getX() - ox) * effectiveSX,
-                    (box.getX() + box.getWidth() - ox) * effectiveSX
-                };
-                float[] localYs = {
-                    (box.getY() - oy) * effectiveSY,
-                    (box.getY() + box.getHeight() - oy) * effectiveSY
-                };
-
-                float minX = Float.MAX_VALUE, minY = Float.MAX_VALUE;
-                float maxX = -Float.MAX_VALUE, maxY = -Float.MAX_VALUE;
-
-                for (float lx : localXs) {
-                    for (float ly : localYs) {
-                        float rx = lx * cos - ly * sin + x;
-                        float ry = lx * sin + ly * cos + y;
-                        minX = Math.min(minX, rx);
-                        minY = Math.min(minY, ry);
-                        maxX = Math.max(maxX, rx);
-                        maxY = Math.max(maxY, ry);
-                    }
+            for (float lx : localXs) {
+                for (float ly : localYs) {
+                    float rx = lx * cos - ly * sin + x;
+                    float ry = lx * sin + ly * cos + y;
+                    minX = Math.min(minX, rx);
+                    minY = Math.min(minY, ry);
+                    maxX = Math.max(maxX, rx);
+                    maxY = Math.max(maxY, ry);
                 }
-
-                result.add(new CollisionBox(minX, minY, maxX - minX, maxY - minY, box.getLabel()));
             }
+
+            result.add(new CollisionBox(minX, minY, maxX - minX, maxY - minY, box.getLabel()));
         }
 
         return result;
+    }
+
+    private float effectiveScaleX() {
+        return scaleX * (flipX ? -1f : 1f);
+    }
+
+    private float effectiveScaleY() {
+        return scaleY * (flipY ? -1f : 1f);
     }
 }

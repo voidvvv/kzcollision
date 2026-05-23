@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *   KZDrawInfo info = player.computeDrawInfo();
  *   info.draw(batch);
  *   // or equivalently:
- *   batch.draw(info.region, info.x, info.y, info.originX, info.originY,
+ *   batch.draw(info.region, info.drawX, info.drawY, info.originX, info.originY,
  *              info.width, info.height, info.scaleX, info.scaleY, info.rotation);
  * </pre>
  */
@@ -23,6 +23,10 @@ public final class KZDrawInfo {
     /** Draw position — the KZ-origin point lands here on screen. */
     public final float x;
     public final float y;
+
+    /** Bottom-left draw position to pass to SpriteBatch. */
+    public final float drawX;
+    public final float drawY;
 
     /** Rotation/scale pivot relative to the sprite's bottom-left corner. */
     public final float originX;
@@ -46,6 +50,8 @@ public final class KZDrawInfo {
         this.region = region;
         this.x = x;
         this.y = y;
+        this.drawX = x - originX;
+        this.drawY = y - originY;
         this.originX = originX;
         this.originY = originY;
         this.width = width;
@@ -61,6 +67,6 @@ public final class KZDrawInfo {
      * overload with origin, scale, and rotation.
      */
     public void draw(SpriteBatch batch) {
-        batch.draw(region, x, y, originX, originY, width, height, scaleX, scaleY, rotation);
+        batch.draw(region, drawX, drawY, originX, originY, width, height, scaleX, scaleY, rotation);
     }
 }

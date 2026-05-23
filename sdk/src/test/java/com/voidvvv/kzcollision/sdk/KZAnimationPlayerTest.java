@@ -120,4 +120,106 @@ public class KZAnimationPlayerTest {
         player.update(1.0f);
         assertEquals(0, player.getCurrentFrameIndex());
     }
+
+    @Test
+    public void drawInfoUsesEffectiveScaleForExplicitFlips() {
+        KZAnimationPlayer player = new KZAnimationPlayer(testAnimation);
+        player.setScale(2f, 3f);
+        player.setFlipX(true);
+        player.setFlipY(true);
+
+        KZDrawInfo info = player.computeDrawInfo();
+
+        assertEquals(-2f, info.scaleX, 0.001f);
+        assertEquals(-3f, info.scaleY, 0.001f);
+    }
+
+    @Test
+    public void drawInfoSupportsNegativeScaleAndFlipCancellation() {
+        KZAnimationPlayer player = new KZAnimationPlayer(testAnimation);
+        player.setScale(-2f, 3f);
+        player.setFlipX(true);
+
+        KZDrawInfo info = player.computeDrawInfo();
+
+        assertEquals(2f, info.scaleX, 0.001f);
+        assertEquals(3f, info.scaleY, 0.001f);
+    }
+
+    @Test
+    public void worldCollisionBoxesApplyPositionAndScaleAroundOrigin() {
+        KZAnimationPlayer player = new KZAnimationPlayer(testAnimation);
+        player.setPosition(100f, 200f);
+        player.setScale(2f, 3f);
+
+        CollisionBox box = player.computeWorldCollisionBoxes().get(0);
+
+        assertEquals(80f, box.getX(), 0.001f);
+        assertEquals(140f, box.getY(), 0.001f);
+        assertEquals(32f, box.getWidth(), 0.001f);
+        assertEquals(48f, box.getHeight(), 0.001f);
+    }
+
+    @Test
+    public void worldCollisionBoxesMirrorXAroundOrigin() {
+        KZAnimationPlayer player = new KZAnimationPlayer(testAnimation);
+        player.setPosition(100f, 200f);
+        player.setFlipX(true);
+
+        CollisionBox box = player.computeWorldCollisionBoxes().get(0);
+
+        assertEquals(94f, box.getX(), 0.001f);
+        assertEquals(180f, box.getY(), 0.001f);
+        assertEquals(16f, box.getWidth(), 0.001f);
+        assertEquals(16f, box.getHeight(), 0.001f);
+    }
+
+    @Test
+    public void worldCollisionBoxesMirrorYAroundOrigin() {
+        KZAnimationPlayer player = new KZAnimationPlayer(testAnimation);
+        player.setPosition(100f, 200f);
+        player.setFlipY(true);
+
+        CollisionBox box = player.computeWorldCollisionBoxes().get(0);
+
+        assertEquals(90f, box.getX(), 0.001f);
+        assertEquals(204f, box.getY(), 0.001f);
+        assertEquals(16f, box.getWidth(), 0.001f);
+        assertEquals(16f, box.getHeight(), 0.001f);
+    }
+
+    @Test
+    public void worldCollisionBoxesTreatNegativeScaleLikeFlip() {
+        KZAnimationPlayer flipped = new KZAnimationPlayer(testAnimation);
+        flipped.setPosition(100f, 200f);
+        flipped.setFlipX(true);
+
+        KZAnimationPlayer negativeScaled = new KZAnimationPlayer(testAnimation);
+        negativeScaled.setPosition(100f, 200f);
+        negativeScaled.setScale(-1f, 1f);
+
+        CollisionBox flipBox = flipped.computeWorldCollisionBoxes().get(0);
+        CollisionBox negativeScaleBox = negativeScaled.computeWorldCollisionBoxes().get(0);
+
+        assertEquals(flipBox.getX(), negativeScaleBox.getX(), 0.001f);
+        assertEquals(flipBox.getY(), negativeScaleBox.getY(), 0.001f);
+        assertEquals(flipBox.getWidth(), negativeScaleBox.getWidth(), 0.001f);
+        assertEquals(flipBox.getHeight(), negativeScaleBox.getHeight(), 0.001f);
+    }
+
+    @Test
+    public void worldCollisionBoxesKeepPositiveSizeWhenFlipAndNegativeScaleCancel() {
+        KZAnimationPlayer player = new KZAnimationPlayer(testAnimation);
+        player.setPosition(100f, 200f);
+        player.setScale(-1f, -1f);
+        player.setFlipX(true);
+        player.setFlipY(true);
+
+        CollisionBox box = player.computeWorldCollisionBoxes().get(0);
+
+        assertEquals(90f, box.getX(), 0.001f);
+        assertEquals(180f, box.getY(), 0.001f);
+        assertEquals(16f, box.getWidth(), 0.001f);
+        assertEquals(16f, box.getHeight(), 0.001f);
+    }
 }

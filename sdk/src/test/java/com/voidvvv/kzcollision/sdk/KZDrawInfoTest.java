@@ -51,6 +51,8 @@ public class KZDrawInfoTest {
 
         assertEquals(100f, info.x, 0.001f);
         assertEquals(200f, info.y, 0.001f);
+        assertEquals(68f, info.drawX, 0.001f);
+        assertEquals(184f, info.drawY, 0.001f);
     }
 
     @Test
@@ -114,6 +116,8 @@ public class KZDrawInfoTest {
 
         assertEquals(50f, info.x, 0.001f);
         assertEquals(75f, info.y, 0.001f);
+        assertEquals(18f, info.drawX, 0.001f);
+        assertEquals(59f, info.drawY, 0.001f);
         assertEquals(-2f, info.scaleX, 0.001f);
         assertEquals(3f, info.scaleY, 0.001f);
         assertEquals(90f, info.rotation, 0.001f);
