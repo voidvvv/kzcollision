@@ -7,5 +7,5 @@ dependencies {
 }
 
 jar {
-  archiveFileName.set("${appName}-jar-${projectVersion}.jar")
+  archiveFileName.set("${appName}-core-${projectVersion}.jar")
 }

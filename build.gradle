@@ -46,7 +46,7 @@ configure([project(':core'), project(':sdk')]) {
       mavenJava(MavenPublication) {
         from components.java
         groupId = project.group
-        artifactId = project.path == ':core' ? "${appName}-jar" : "${appName}-sdk"
+        artifactId = project.path == ':core' ? "${appName}-core" : "${appName}-sdk"
         version = project.version
       }
     }
