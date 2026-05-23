@@ -5,3 +5,7 @@ dependencies {
   api "com.google.code.gson:gson:$gsonVersion"
   testImplementation 'junit:junit:4.13.2'
 }
+
+jar {
+  archiveFileName.set("${appName}-jar-${projectVersion}.jar")
+}

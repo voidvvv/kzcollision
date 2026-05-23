@@ -6,3 +6,8 @@ dependencies {
   api "com.badlogicgames.gdx:gdx:$gdxVersion"
   testImplementation 'junit:junit:4.13.2'
 }
+
+jar {
+  archiveFileName.set("${appName}-sdk-${projectVersion}.jar")
+  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}

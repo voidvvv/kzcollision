@@ -35,6 +35,7 @@ configure([project(':core'), project(':sdk')]) {
 
   group = 'com.voidvvv.kzcollision'
   version = "$projectVersion"
+  ext.appName = 'kzcollision'
 
   java {
     withSourcesJar()
@@ -45,7 +46,7 @@ configure([project(':core'), project(':sdk')]) {
       mavenJava(MavenPublication) {
         from components.java
         groupId = project.group
-        artifactId = project.name
+        artifactId = project.path == ':core' ? "${appName}-jar" : "${appName}-sdk"
         version = project.version
       }
     }
