@@ -32,13 +32,25 @@ configure(subprojects) {
 
 configure([project(':core'), project(':sdk')]) {
   apply plugin: 'maven-publish'
+  apply plugin: 'signing'
 
   group = 'com.voidvvv.kzcollision'
   version = "$projectVersion"
   ext.appName = 'kzcollision'
+  ext.centralPublishRequested = {
+    gradle.startParameter.taskNames.any { taskName ->
+      taskName.toLowerCase(Locale.ROOT).contains('centralportal')
+    }
+  }
 
   java {
     withSourcesJar()
+    withJavadocJar()
+  }
+
+  javadoc {
+    options.encoding = 'UTF-8'
+    options.addStringOption('Xdoclint:none', '-quiet')
   }
 
   publishing {
@@ -48,8 +60,62 @@ configure([project(':core'), project(':sdk')]) {
         groupId = project.group
         artifactId = project.path == ':core' ? "${appName}-core" : "${appName}-sdk"
         version = project.version
+
+        pom {
+          name = project.path == ':core' ? 'KZCollision Core' : 'KZCollision SDK'
+          description = project.path == ':core'
+              ? 'Core data model and JSON serialization for KZCollision.'
+              : 'Runtime SDK for loading, rendering, and querying KZCollision animation collision data.'
+          url = findProperty('pomUrl') ?: 'https://github.com/voidvvv/kzcollision'
+
+          licenses {
+            license {
+              name = findProperty('pomLicenseName') ?: 'The Apache License, Version 2.0'
+              url = findProperty('pomLicenseUrl') ?: 'https://www.apache.org/licenses/LICENSE-2.0.txt'
+            }
+          }
+
+          developers {
+            developer {
+              id = findProperty('pomDeveloperId') ?: 'voidvvv'
+              name = findProperty('pomDeveloperName') ?: 'voidvvv'
+              email = findProperty('pomDeveloperEmail') ?: 'voidvvv@example.com'
+            }
+          }
+
+          scm {
+            connection = findProperty('pomScmConnection')
+                ?: 'scm:git:https://github.com/voidvvv/kzcollision.git'
+            developerConnection = findProperty('pomScmDeveloperConnection')
+                ?: 'scm:git:ssh://git@github.com/voidvvv/kzcollision.git'
+            url = findProperty('pomScmUrl') ?: 'https://github.com/voidvvv/kzcollision'
+          }
+        }
       }
     }
+
+    repositories {
+      maven {
+        name = 'CentralPortal'
+        url = uri(findProperty('centralRepositoryUrl')
+            ?: 'https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/')
+        credentials {
+          username = findProperty('centralUsername') ?: System.getenv('CENTRAL_USERNAME')
+          password = findProperty('centralPassword') ?: System.getenv('CENTRAL_PASSWORD')
+        }
+      }
+    }
+  }
+
+  signing {
+    required { centralPublishRequested() }
+
+    def signingKey = findProperty('signingKey') ?: System.getenv('SIGNING_KEY')
+    def signingPassword = findProperty('signingPassword') ?: System.getenv('SIGNING_PASSWORD')
+    if (signingKey) {
+      useInMemoryPgpKeys(signingKey, signingPassword)
+    }
+    sign publishing.publications.mavenJava
   }
 }
 
