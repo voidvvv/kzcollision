@@ -10,6 +10,14 @@ buildscript {
   }
 }
 
+plugins {
+  id 'com.gradleup.nmcp.aggregation' version '1.4.4'
+}
+
+repositories {
+  mavenCentral()
+}
+
 allprojects {
   apply plugin: 'eclipse'
   apply plugin: 'idea'
@@ -33,8 +41,9 @@ configure(subprojects) {
 configure([project(':core'), project(':sdk')]) {
   apply plugin: 'maven-publish'
   apply plugin: 'signing'
+  apply plugin: 'com.gradleup.nmcp'
 
-  group = 'com.voidvvv.kzcollision'
+  group = findProperty('publishGroup') ?: System.getenv('PUBLISH_GROUP') ?: 'io.github.voidvvv'
   version = "$projectVersion"
   ext.appName = 'kzcollision'
   ext.centralPublishRequested = {
@@ -79,7 +88,7 @@ configure([project(':core'), project(':sdk')]) {
             developer {
               id = findProperty('pomDeveloperId') ?: 'voidvvv'
               name = findProperty('pomDeveloperName') ?: 'voidvvv'
-              email = findProperty('pomDeveloperEmail') ?: 'voidvvv@example.com'
+              email = findProperty('pomDeveloperEmail') ?: 'voidvvv01@gmail.com'
             }
           }
 
@@ -93,18 +102,6 @@ configure([project(':core'), project(':sdk')]) {
         }
       }
     }
-
-    repositories {
-      maven {
-        name = 'CentralPortal'
-        url = uri(findProperty('centralRepositoryUrl')
-            ?: 'https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/')
-        credentials {
-          username = findProperty('centralUsername') ?: System.getenv('CENTRAL_USERNAME')
-          password = findProperty('centralPassword') ?: System.getenv('CENTRAL_PASSWORD')
-        }
-      }
-    }
   }
 
   signing {
@@ -112,11 +109,33 @@ configure([project(':core'), project(':sdk')]) {
 
     def signingKey = findProperty('signingKey') ?: System.getenv('SIGNING_KEY')
     def signingPassword = findProperty('signingPassword') ?: System.getenv('SIGNING_PASSWORD')
-    if (signingKey) {
+    if (signingKey && signingKey.contains('BEGIN PGP PRIVATE KEY BLOCK')) {
       useInMemoryPgpKeys(signingKey, signingPassword)
+    } else {
+      if (signingKey) {
+        project.ext['signing.gnupg.keyName'] = signingKey
+      }
+      if (signingPassword) {
+        project.ext['signing.gnupg.passphrase'] = signingPassword
+      }
+      useGpgCmd()
     }
     sign publishing.publications.mavenJava
   }
+}
+
+nmcpAggregation {
+  centralPortal {
+    username = findProperty('centralUsername') ?: System.getenv('CENTRAL_USERNAME')
+    password = findProperty('centralPassword') ?: System.getenv('CENTRAL_PASSWORD')
+    publishingType = findProperty('centralPublishingType') ?: 'USER_MANAGED'
+    publicationName = findProperty('centralPublicationName') ?: "kzcollision:${projectVersion}"
+  }
+}
+
+dependencies {
+  nmcpAggregation project(':core')
+  nmcpAggregation project(':sdk')
 }
 
 subprojects {
